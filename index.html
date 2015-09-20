@@ -1,58 +1,63 @@
-<html>
-    <link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Aruna Herath</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        html, body {
-            height: 100%;
-        }
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
 
-        html {
-            display: table;
-            margin: auto;
-        }
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="four columns" style="margin-top: 10%">
+        <img src="/images/me.jpg">
+        <div class="info">
+          <a href="https://github.com/RoonyH">Github</a><br>
+          <a href="http://blog.arunaherath.com">Blog</a><br>
+          <a href="https://lk.linkedin.com/in/arunaherath">LinkedIn</a><br>
+          <a href="https://www.facebook.com/aruna.herath99">Facebook</a><br>
+          <div id="email"></div>
+        </div>
+      </div>
 
-        body {
-            display: table-cell;
-            vertical-align: middle;
-            padding-left: 20px;
-        }
+      <div class="eight columns" style="margin-top: 10%">
+        <h1>
+            Hi!
+        </h1>
 
-        body {
-            font-family: Courgette;
-        }
+        <h4>
+            I am <mark class="red">Aruna Herath</mark><br>
+            I am a <mark class="blue">Software Engineer</mark> at <a href="https://kadira.io/">Kadira</a>.
+        </h4>
 
+        <p>
+            My interests, which change from time to time, revolve around <strong>Networks</strong>,<br>
+            <strong>Computer Security</strong> and <strong>web frameworks and technologies.</strong> <br>
+            <br>
+            I was a <strong>Google Summer of Code</strong> student for <a href="https://code.google.com/p/soc/">Melange</a>
+            in 2013.<br>
+            I mentored students for <a href="http://fossasia.org/">FOSSASIA</a> in <strong>Google Code in</strong> 2014.<br>
+            <br>
+            I <a href="http://blog.arunaherath.com/">blog</a> once in a while <br>
+        </p>
+      </div>
+    </div>
+  </div>
 
-        mark.red{
-            color:#ff0000;
-            background: none;
-        }
-
-        mark.blue{
-            color:#0000A0;
-            background: none;
-        }
-
-    </style>
-
-    <h1>
-        Hi!
-    </h1>
-
-    <h2>
-        I am <mark class="red">Aruna Herath</mark>
-    </h2>
-
-    <h2>
-        I am a <mark class="blue">web developer</mark>, mainly focused on the <mark class="red">server side</mark>.
-    </h2>
-
-    <h2>
-        My interests, which change from time to time, revolve around <mark class="blue">Networks</mark> <br>
-        <mark class="red">Computer Security</mark> and <mark class="blue">web frameworks and technologies.</mark> <br>
-    </h2s>
-
-    <h2>
-        I <a href="http://blog.arunaherath.com/">blog</a> once in a while <br>
-    </h2>
+<!-- add mailto link by js-->
+<script language="JavaScript">
+  var username = "arunabherath";
+  var hostname = "gmail";
+  var linktext = "✉" ;
+  document.getElementById("email").innerHTML =
+    "<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "</a>";
+</script>
+</body>
 </html>
