@@ -1,0 +1,135 @@
+<div dir="ltr" style="text-align: left;" trbidi="on">
+<br />
+Building functionality to upload a file to a Node.js server using express is a <a href="http://howtonode.org/really-simple-file-uploads" target="_blank">piece of cake</a>. But for various reasons sometimes we do not want to use express. I had to implement such a functionality for such a system which only uses pure&nbsp;Node.js. Here is my experience while at it.<br />
+<br />
+<span style="font-size: large;">HTTP&nbsp;multipart request</span><br />
+<br />
+Http is a text based protocol. It is intended to transfer text. If we transfer files which may contain binary patterns that are not found in simple text files, the network components, as they are only intended to handle text, may misbehave. The data in the http packet could contain a byte with a pattern that is used as a control signal in the http protocol. For example the end of transmission(EOT) character. Some components may reject bytes that are not valid text. Some may edit them. These may corrupt the file.<br />
+<br />
+To avoid such pitfalls the standard of http multipart request is used. Http multipart request body is a little different in format to its regular counterpart. Most notably the value of the content type header field would be 'multipart/form-data'. The body of the http request could contain multiple files separated by a boundary. Network components are designed so that they would interpret multipart requests differently than regular ones. Data amid boundaries are treated as binary and they would not care what they mean.<br />
+<br />
+So when we upload a file to a server through the internet what we actually do is no different than what we do when we submit a form by an http post request. Except that the http post request is encoded in a different way.<br />
+<br />
+However above information is not needed to be known by the application programmer because the user agent she is writing the program to, should know how to put together an http multipart request. For example the browser (a user agent) would submit a multiparty request at the submission of following html form.<br />
+<br />
+<!-- HTML generated using hilite.me --><br />
+<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">    <span style="color: #007700;">&lt;form</span> <span style="color: #0000cc;">action=</span><span style="background-color: #fff0f0;">"/upload"</span> <span style="color: #0000cc;">enctype=</span><span style="background-color: #fff0f0;">"multipart/form-data"</span> <span style="color: #0000cc;">method=</span><span style="background-color: #fff0f0;">"post"</span><span style="color: #007700;">&gt;</span>
+    <span style="color: #007700;">&lt;input</span> <span style="color: #0000cc;">type=</span><span style="background-color: #fff0f0;">"text"</span> <span style="color: #0000cc;">name=</span><span style="background-color: #fff0f0;">"title"</span><span style="color: #007700;">&gt;&lt;br&gt;</span>
+    <span style="color: #007700;">&lt;input</span> <span style="color: #0000cc;">type=</span><span style="background-color: #fff0f0;">"file"</span> <span style="color: #0000cc;">name=</span><span style="background-color: #fff0f0;">"upload"</span> <span style="color: #0000cc;">multiple=</span><span style="background-color: #fff0f0;">"multiple"</span><span style="color: #007700;">&gt;&lt;br&gt;</span>
+    <span style="color: #007700;">&lt;input</span> <span style="color: #0000cc;">type=</span><span style="background-color: #fff0f0;">"submit"</span> <span style="color: #0000cc;">value=</span><span style="background-color: #fff0f0;">"Upload"</span><span style="color: #007700;">&gt;</span>
+    <span style="color: #007700;">&lt;/form&gt;</span>
+</pre>
+</div>
+<br />
+Or on the Linux terminal<br />
+<br />
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">curl -v -include --form <span style="color: #996633">file</span><span style="color: #333333">=</span>@my_image.png http://localhost:3000/upload
+</pre></div>
+
+<br />
+<span style="font-size: large;">Server side</span><br />
+<br />
+Just as the http client the application programmer is using would encode an http multiparty request, the server side framework should decode one for her. As mentioned earlier express would do this without a hassle. But if express is not an option for you, if you are on pure&nbsp;Node.js, then you might be a little confused. I&nbsp;was too until I got to know about <a href="https://www.npmjs.org/package/multiparty" target="_blank">multiparty</a>. This npm package takes in the request instance and gives you references to the files saved in your disk on the temp directory, the files that were included in the request. Just as express would have.<br />
+<br />
+<!-- HTML generated using hilite.me --><br />
+<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">http.createServer(<span style="color: #008800; font-weight: bold;">function</span>(req, res) {
+  <span style="color: #008800; font-weight: bold;">var</span> multiparty <span style="color: #333333;">=</span> require(<span style="background-color: #fff0f0;">'multiparty'</span>);
+
+  <span style="color: #008800; font-weight: bold;">if</span> (req.url <span style="color: #333333;">===</span> <span style="background-color: #fff0f0;">'/upload'</span> <span style="color: #333333;">&amp;&amp;</span> req.method <span style="color: #333333;">===</span> <span style="background-color: #fff0f0;">'POST'</span>) {
+    <span style="color: #888888;">// parse a file upload</span>
+    <span style="color: #008800; font-weight: bold;">var</span> form <span style="color: #333333;">=</span> <span style="color: #008800; font-weight: bold;">new</span> multiparty.Form();
+
+    form.parse(req, <span style="color: #008800; font-weight: bold;">function</span>(err, fields, files) {
+      res.writeHead(<span style="color: #0000dd; font-weight: bold;">200</span>, {<span style="background-color: #fff0f0;">'content-type'</span><span style="color: #333333;">:</span> <span style="background-color: #fff0f0;">'text/plain'</span>});
+      response.end(<span style="background-color: #fff0f0;">"File uploaded successfully!"</span>);
+      <span style="color: #888888;">// 'files' array would contain the files in the request</span>
+    });
+
+    <span style="color: #008800; font-weight: bold;">return</span>;
+  }
+
+}).listen(<span style="color: #0000dd; font-weight: bold;">8080</span>);
+</pre>
+</div>
+<br />
+In the callback of the form.parse method it is possible to read the file in and save it to a database, rename it (move it) or do any other processing.<br />
+<br />
+<span style="font-size: large;">Processing the request</span><br />
+<br />
+But if we are gonna save the file on the mongodb database why save it in the disk? Turns out we don't have to.<br />
+<br />
+The form instant created by multiparty's Form constructor has 'part' and 'close' events to which handlers can be hooked. The 'part' event will be triggered once for each file(<b>part</b>) included in the multi<b>part </b>request. 'close' will be triggered once all the files are read.<br />
+<br />
+The handler of the 'part' event will be passed an instance of a&nbsp;Node.js&nbsp;<a href="http://nodejs.org/api/stream.html#stream_class_stream_readable" target="_blank">ReadableStream</a>, just like a request instance to an Node.js http server. So it has 'data' and 'close' events (among others) just like a request instance to an&nbsp;Node.js&nbsp;http server, that can be used to read in the file, chunk by chunk.<br />
+<br />
+<!-- HTML generated using hilite.me --><br />
+<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">form.on(<span style="background-color: #fff0f0;">'part'</span>, <span style="color: #008800; font-weight: bold;">function</span>(part) {
+    console.log(<span style="background-color: #fff0f0;">'got file named '</span> <span style="color: #333333;">+</span> part.name);
+    <span style="color: #008800; font-weight: bold;">var</span> data <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">''</span>;
+    part.setEncoding(<span style="background-color: #fff0f0;">'binary'</span>); <span style="color: #888888;">//read as binary</span>
+    part.on(<span style="background-color: #fff0f0;">'data'</span>, <span style="color: #008800; font-weight: bold;">function</span>(d){ data <span style="color: #333333;">=</span> data <span style="color: #333333;">+</span> d; });
+    part.on(<span style="background-color: #fff0f0;">'end'</span>, <span style="color: #008800; font-weight: bold;">function</span>(){
+      <span style="color: #888888;">//data variable has the file now. It can be saved in the mongodb database.</span>
+    });
+  });
+</pre>
+</div>
+<br />
+The handler of the 'close' can be used to respond to the client.<br />
+<br />
+<!-- HTML generated using hilite.me --><br />
+<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">  form.on(<span style="background-color: #fff0f0;">'close'</span>, <span style="color: #008800; font-weight: bold;">function</span>() {
+    res.writeHead(<span style="color: #0000dd; font-weight: bold;">200</span>, {<span style="background-color: #fff0f0;">'content-type'</span><span style="color: #333333;">:</span> <span style="background-color: #fff0f0;">'text/plain'</span>});
+    response.end(<span style="background-color: #fff0f0;">"File uploaded successfully!"</span>);
+  });
+</pre>
+</div>
+<br />
+The complete code would look like this.<br />
+<br />
+<!-- HTML generated using hilite.me --><br />
+<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">  <span style="color: #008800; font-weight: bold;">var</span> multiparty <span style="color: #333333;">=</span> require(<span style="background-color: #fff0f0;">'multiparty'</span>);
+  <span style="color: #008800; font-weight: bold;">var</span> form <span style="color: #333333;">=</span> <span style="color: #008800; font-weight: bold;">new</span> multiparty.Form();
+
+  <span style="color: #008800; font-weight: bold;">var</span> attachments <span style="color: #333333;">=</span> []
+
+  form.on(<span style="background-color: #fff0f0;">'part'</span>, <span style="color: #008800; font-weight: bold;">function</span>(part) {
+    <span style="color: #008800; font-weight: bold;">var</span> bufs <span style="color: #333333;">=</span> [];
+
+    <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #333333;">!</span>part.filename) { <span style="color: #888888;">//not a file but a field</span>
+      console.log(<span style="background-color: #fff0f0;">'got field named '</span> <span style="color: #333333;">+</span> part.name);
+      part.resume();
+    }
+
+    <span style="color: #008800; font-weight: bold;">if</span> (part.filename) {
+      console.log(<span style="background-color: #fff0f0;">'got file named '</span> <span style="color: #333333;">+</span> part.name);
+      <span style="color: #008800; font-weight: bold;">var</span> data <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">""</span>;
+      part.setEncoding(<span style="background-color: #fff0f0;">'binary'</span>); <span style="color: #888888;">//read as binary</span>
+      part.on(<span style="background-color: #fff0f0;">'data'</span>, <span style="color: #008800; font-weight: bold;">function</span>(d){ data <span style="color: #333333;">=</span> data <span style="color: #333333;">+</span> d; });
+      part.on(<span style="background-color: #fff0f0;">'end'</span>, <span style="color: #008800; font-weight: bold;">function</span>(){
+        <span style="color: #888888;">//data variable has the file now. It can be saved in the mongodb database.</span>
+      });
+    }
+  });
+
+  form.on(<span style="background-color: #fff0f0;">'close'</span>, <span style="color: #008800; font-weight: bold;">function</span>() {
+    response.writeHead(<span style="color: #0000dd; font-weight: bold;">200</span>);
+    response.end(<span style="background-color: #fff0f0;">"File uploaded successfully!"</span>);
+  });
+
+  form.parse(request);
+</pre>
+</div>
+<br />
+Multiparty would save the files to the disk, only if the form.parse method is provided a callback. So in the above case it would not do so. It is expected that processing of the file is handled using the event handlers of the form instance.<br />
+<br />
+<span style="font-size: large;">Saving on MongoDb</span><br />
+<br />
+Saving the data on the mongodb database could be done using the <a href="http://mongodb.github.io/node-mongodb-native/api-generated/gridstore.html" target="_blank">GridStore</a>. This part will not be included in this post since it is straight forward. Further this step will be the same whether we use express or not, and I want this post to be specific to the case of pure Node.js.<br />
+<br />
+Thanks for checking out!</div>
