@@ -9,11 +9,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-  <link rel="stylesheet" href="/css/normalize.css">
-  <link rel="stylesheet" href="/css/skeleton.css">
 
   <link rel="icon" type="image/png" href="images/favicon.png">
 </head><div dir="ltr" style="text-align: left;" trbidi="on">
+     <body>
+          <style>
+               html {
+                    max-width: 70ch;
+                    /* larger spacing on larger screens, very small spacing on tiny screens */
+                    padding: calc(1vmin + .5rem);
+                    /* shorthand for margin-left/margin-right */
+                    margin-inline: auto;
+                    /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+                    font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+                    /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+                    font-family: system-ui
+                  }
+              
+                  /* increase line-height for everything except headings */
+                  body :not(:is(h1,h2,h3,h4,h5,h6)) {
+                    line-height: 1.75;
+                  }
+          </style>
 <a href="http://socket.io/">Socket.io</a> is the most popular websocket implementation library that is available to the application develeper. However for a long time it was full of bugs, had a lot of architectural issues and is not maintained. But changing all that socket.io version 1.0.0 came out. At this time the latest stable socket.io version is 1.1.0 and its so much improved.<br />
 <br />
 If you are excited about the websockets technology and socket.io helped you to explore it, you'd be delighted to here about this all new rebirth of it. But trying to migrate to the new version from the old one is where you'd lose most of that delight. Specially if you have multiple nodes running on your server for load balancing.<br />
@@ -66,4 +83,5 @@ Wrapping the server instance in sticky function should do it.<br />
 <br />
 And now socket.io 1.1.0 starts working! Its really not that difficult but there are not much help around the internet to the migrater. Once many stackoverflow questions around are answered and many new tutorials are put up socket.io would be great to work with.<br />
 <br /></div>
+</body>
 </html>

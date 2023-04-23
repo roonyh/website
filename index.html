@@ -1,66 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Aruna Herath</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <body>
+    <style>
+      html {
+        max-width: 70ch;
+        /* larger spacing on larger screens, very small spacing on tiny screens */
+        padding: calc(1vmin + 0.5rem);
+        /* shorthand for margin-left/margin-right */
+        margin-inline: auto;
+        /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+        font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+        /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+        font-family: system-ui;
+      }
 
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
+      /* increase line-height for everything except headings */
+      body :not(:is(h1, h2, h3, h4, h5, h6)) {
+        line-height: 1.75;
+      }
 
-  <link rel="icon" type="image/png" href="images/favicon.png">
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="four columns" style="margin-top: 10%">
-        <img src="/images/me.png">
-        <div class="info">
-          <a href="https://github.com/roonyh">Github</a><br>
-          <a href="http://www.arunaherath.com/blog">Blog</a><br>
-          <a href="https://lk.linkedin.com/in/arunaherath">LinkedIn</a><br>
-          <a href="https://www.facebook.com/roonyhh">Facebook</a><br>
-          <div id="email"></div>
+      .container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .info {
+        justify-content: space-around;
+      }
+
+      .content {
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .text-content {
+        margin-left: 10px;
+        flex-basis: 300px;
+        flex-grow: 1;
+      }
+    </style>
+    <div class="container">
+      <div class="row info">
+        <a href="https://github.com/roonyh">Github</a>
+        <a href="http://www.arunaherath.com/blog">Blog</a>
+        <a href="https://lk.linkedin.com/in/arunaherath">LinkedIn</a>
+        <a href="https://www.facebook.com/roonyhh">Facebook</a>
+        <div id="email"></div>
+      </div>
+      <div class="row content">
+        <div class="image-container">
+          <img src="/images/me.png" style="width: 200px;"/>
+        </div>
+
+        <div class="text-content">
+          <h1 style="margin-top: 0;">Hi!</h1>
+
+          <h4>
+            I am <mark class="red">Aruna Herath</mark>.<br />
+            I am an <mark class="blue">Engineering Manager</mark> at
+            <a href="https://www.deliveryhero.com/">Delivery Hero</a>.
+          </h4>
+
+          <p>
+            My technical interests, which change from time to time, revolve
+            around <strong>networks</strong>,<br />
+            <strong>web application security, performance</strong> and
+            <strong>the web</strong> in general. <br />
+            <br />
+            I was a <strong>Google Summer of Code</strong> student for
+            <a href="https://code.google.com/p/soc/">Melange</a> in 2013.<br />
+            I mentored students for
+            <a href="http://fossasia.org/">FOSSASIA</a> in
+            <strong>Google Code In</strong> 2014 and 2015.<br /><br />
+            I contributed to
+            <a href="https://storybook.js.org/">react storybook</a> at
+            <a href="https://github.com/kadirahq">Kadira</a>.<br /><br />
+            I worked on tooling for
+            <a href="https://ballerina.io/">Ballerina</a> language at
+            <a href="https://wso2.com/">WSO2</a>.<br /><br />
+            <br />
+            I <a href="http://www.arunaherath.com/blog">blog</a> once in a while
+            <br />
+          </p>
         </div>
       </div>
-
-      <div class="eight columns" style="margin-top: 10%">
-        <h1>
-            Hi!
-        </h1>
-        
-        <h4>
-            I am <mark class="red">Aruna Herath</mark>.<br>
-            I am an <mark class="blue">Engineering Manager</mark> at <a href="https://www.deliveryhero.com/">Delivery Hero/</a>.
-        </h4>
-
-        <p>
-            My technical interests, which change from time to time, revolve around <strong>networks</strong>,<br>
-            <strong>web application security, performance</strong> and <strong>the web</strong> in general. <br>
-            <br>
-            I was a <strong>Google Summer of Code</strong> student for <a href="https://code.google.com/p/soc/">Melange</a>
-            in 2013.<br>
-            I mentored students for <a href="http://fossasia.org/">FOSSASIA</a> in <strong>Google Code In</strong> 2014 and 2015.<br><br>
-            I contributed to <a href="https://storybook.js.org/">react storybook</a> at <a href="https://github.com/kadirahq">Kadira</a>.<br><br>
-            I worked on tooling for <a href="https://ballerina.io/">Ballerina</a> language at <a href="https://wso2.com/">WSO2</a>.<br><br>
-            <br>
-            I <a href="http://www.arunaherath.com/blog">blog</a> once in a while <br>
-        </p>
-      </div>
     </div>
-  </div>
 
-<!-- add mailto link by js-->
-<script language="JavaScript">
-  var username = "arunabherath";
-  var hostname = "gmail";
-  var linktext = "✉" ;
-  document.getElementById("email").innerHTML =
-    "<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "</a>";
-</script>
-</body>
+    <!-- add mailto link by js-->
+    <script language="JavaScript">
+      var username = "arunabherath";
+      var hostname = "gmail";
+      var linktext = "Email";
+      document.getElementById("email").innerHTML =
+        "<a href='" +
+        "mail" +
+        "to:" +
+        username +
+        "@" +
+        hostname +
+        "'>" +
+        linktext +
+        "</a>";
+    </script>
+  </body>
 </html>
