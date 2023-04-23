@@ -1,23 +1,81 @@
-<div dir="ltr" style="text-align: left;" trbidi="on">
-<div style="text-align: left;">
-You probably know what <a href="http://redis.io/" rel="" target="_blank">redis</a> is. Just in case it is a data structure server that usually work as a key value pair store. The data is stored in memory by default instead of a disk, so it is really really fast with the sacrifice of reliability.<br />
-<br />
-<h3 style="text-align: left;">
-Faking</h3>
-<div class="separator" style="clear: both; text-align: center;">
-<a href="http://www.squawka.com/news/wp-content/uploads/2014/06/Suarez-fake.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://www.squawka.com/news/wp-content/uploads/2014/06/Suarez-fake.jpg" height="227" width="320" /></a></div>
-<div>
-<br /></div>
-At work while writing tests for some code that uses <b>redis</b>, in <b>nodejs</b>, I wanted to fake a <b>redis</b> server. Why would I do such thing? Because my tests are better isolated. They don't depend on some other process (the <b>redis</b> server).<br />
-<br />
-Now how to fake the behavior of <b>redis</b> for tests? By using fantastic&nbsp;<a href="https://github.com/guilleiguaran/fakeredis" rel="" target="_blank">fakeredis</a>. <b>fakeredis</b> is an <b>npm</b> library which makes faking the <b>redis</b> behavior in a&nbsp;<b>nodejs</b> application very easy. It also has a ruby gem, so can be used in a ruby application as well.<br />
-<br />
-<h3 style="text-align: left;">
-The code under tests</h3>
-<br />
-This is the code I wanted to test.<br />
-<br />
-<pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <div dir="ltr" style="text-align: left" trbidi="on">
+    <body>
+      <style>
+        html {
+          max-width: 70ch;
+          /* larger spacing on larger screens, very small spacing on tiny screens */
+          padding: calc(1vmin + 0.5rem);
+          /* shorthand for margin-left/margin-right */
+          margin-inline: auto;
+          /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+          font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+          /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+          font-family: system-ui;
+        }
+
+        /* increase line-height for everything except headings */
+        body :not(:is(h1, h2, h3, h4, h5, h6)) {
+          line-height: 1.75;
+        }
+      </style>
+      <h1>Faking Redis with Fakeredis</h1>
+      <div dir="ltr" style="text-align: left" trbidi="on">
+        <div style="text-align: left">
+          You probably know what
+          <a href="http://redis.io/" rel="" target="_blank">redis</a> is. Just
+          in case it is a data structure server that usually work as a key value
+          pair store. The data is stored in memory by default instead of a disk,
+          so it is really really fast with the sacrifice of reliability.<br />
+          <br />
+          <h3 style="text-align: left">Faking</h3>
+          <div class="separator" style="clear: both; text-align: center">
+            <a
+              href="http://www.squawka.com/news/wp-content/uploads/2014/06/Suarez-fake.jpg"
+              imageanchor="1"
+              style="margin-left: 1em; margin-right: 1em"
+              ><img
+                border="0"
+                src="http://www.squawka.com/news/wp-content/uploads/2014/06/Suarez-fake.jpg"
+                height="227"
+                width="320"
+            /></a>
+          </div>
+          <div>
+            <br />
+          </div>
+          At work while writing tests for some code that uses <b>redis</b>, in
+          <b>nodejs</b>, I wanted to fake a <b>redis</b> server. Why would I do
+          such thing? Because my tests are better isolated. They don't depend on
+          some other process (the <b>redis</b> server).<br />
+          <br />
+          Now how to fake the behavior of <b>redis</b> for tests? By using
+          fantastic&nbsp;<a
+            href="https://github.com/guilleiguaran/fakeredis"
+            rel=""
+            target="_blank"
+            >fakeredis</a
+          >. <b>fakeredis</b> is an <b>npm</b> library which makes faking the
+          <b>redis</b> behavior in a&nbsp;<b>nodejs</b> application very easy.
+          It also has a ruby gem, so can be used in a ruby application as
+          well.<br />
+          <br />
+          <h3 style="text-align: left">The code under tests</h3>
+          <br />
+          This is the code I wanted to test.<br />
+          <br />
+          <pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 
 <span style="color: maroon; font-weight: bold;">var</span> client <span style="color: #808030;">=</span> redis<span style="color: #808030;">.</span>createClient<span style="color: #808030;">(</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 
@@ -29,16 +87,19 @@ This is the code I wanted to test.<br />
 
 exports<span style="color: #808030;">.</span>isOnline <span style="color: #808030;">=</span> isOnline<span style="color: purple;">;</span>
 </pre>
-<pre><span style="color: purple;">
+          <pre><span style="color: purple;">
 </span></pre>
-<b>isOnline</b> is a simple function that checks whether a socket id for a given user name exists in the <b>redis</b> store.<br />
-<br />
-<h3 style="text-align: left;">
-<b>Tests Without Faking</b></h3>
-<br />
-My usual test for this function, if I didn't knew <b>fakeredis</b> existed, would be,<br />
-<br />
-<pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
+          <b>isOnline</b> is a simple function that checks whether a socket id
+          for a given user name exists in the <b>redis</b> store.<br />
+          <br />
+          <h3 style="text-align: left">
+            <b>Tests Without Faking</b>
+          </h3>
+          <br />
+          My usual test for this function, if I didn't knew
+          <b>fakeredis</b> existed, would be,<br />
+          <br />
+          <pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> assert <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'assert'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 
 <span style="color: maroon; font-weight: bold;">var</span> users <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'../lib/users.js'</span><span style="color: #808030;">)</span>
@@ -66,20 +127,32 @@ describe<span style="color: #808030;">(</span><span style="color: #0000e6;">'isO
   <span style="color: purple;">}</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: purple;">}</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 </pre>
-<pre><span style="color: purple;">
+          <pre><span style="color: purple;">
 </span></pre>
-As it is obvious by the code itself I am testing whether the function returns true to the callback when a socket id for a particular user name is in the <b>redis</b> store, and false otherwise.<br />
-<br />
-The biggest problem here is that anyone who runs those tests must make sure a <b>redis</b>-<b>server</b> process is running. Tests won't pass otherwise. Also running these tests on the production server is probably a bad idea since they would tamper with production data. Also after each test their should be a clean up step that clears out the data added to the database during the test. A <b>flushdb</b> call, which flushes out the data, would be ideal for this task. As every test would start to run on a clean database, they will be better isolated from each other. But such call is hazardous because someone could run the tests on a production server and flush out all the production data!<br />
-<br />
-<h3 style="text-align: left;">
-Tests With faking</h3>
-<br />
-Here's how <b>fakeredis</b> is used to avoid above shortcomings.<br />
-<br />
-I used <b>sinon</b> to stub the <b>redis createClient</b> function. Before all here is the before hook that does it.<br />
-<br />
-<pre><span style="color: maroon; font-weight: bold;">var</span> fakeredis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'fakeredis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
+          As it is obvious by the code itself I am testing whether the function
+          returns true to the callback when a socket id for a particular user
+          name is in the <b>redis</b> store, and false otherwise.<br />
+          <br />
+          The biggest problem here is that anyone who runs those tests must make
+          sure a <b>redis</b>-<b>server</b> process is running. Tests won't pass
+          otherwise. Also running these tests on the production server is
+          probably a bad idea since they would tamper with production data. Also
+          after each test their should be a clean up step that clears out the
+          data added to the database during the test. A <b>flushdb</b> call,
+          which flushes out the data, would be ideal for this task. As every
+          test would start to run on a clean database, they will be better
+          isolated from each other. But such call is hazardous because someone
+          could run the tests on a production server and flush out all the
+          production data!<br />
+          <br />
+          <h3 style="text-align: left">Tests With faking</h3>
+          <br />
+          Here's how <b>fakeredis</b> is used to avoid above shortcomings.<br />
+          <br />
+          I used <b>sinon</b> to stub the <b>redis createClient</b> function.
+          Before all here is the before hook that does it.<br />
+          <br />
+          <pre><span style="color: maroon; font-weight: bold;">var</span> fakeredis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'fakeredis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> sinon <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'sinon'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> assert <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'assert'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 
@@ -97,13 +170,23 @@ describe<span style="color: #808030;">(</span><span style="color: #0000e6;">'isO
 
 <span style="color: purple;">}</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 </pre>
-<pre><span style="color: purple;">
+          <pre><span style="color: purple;">
 </span></pre>
-The block of code in the before hook would run before running any test and would stub the regulare <b>redis.createClient </b>function with <b>fakeredis.createClient</b> function. Stubbing is replacing a resource that your system uses, with something that imitates that resource's behavior. So after stubbing whenever the <b>redis.createClient</b> is called what actually gets called is <b>fakeredis.createClient.</b><br />
-<br />
-Now any method call on the <b>redis</b> client instance returned by <b>createClient</b> function would not tamper with anything in the <b>redis</b> server. <b>fakeredis</b> would imitate the behavior of and the code under tests would not know a thing about the faking! Now the tests look like this.<br />
-<br />
-<pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
+          The block of code in the before hook would run before running any test
+          and would stub the regulare <b>redis.createClient </b>function with
+          <b>fakeredis.createClient</b> function. Stubbing is replacing a
+          resource that your system uses, with something that imitates that
+          resource's behavior. So after stubbing whenever the
+          <b>redis.createClient</b> is called what actually gets called is
+          <b>fakeredis.createClient.</b><br />
+          <br />
+          Now any method call on the <b>redis</b> client instance returned by
+          <b>createClient</b> function would not tamper with anything in the
+          <b>redis</b> server. <b>fakeredis</b> would imitate the behavior of
+          and the code under tests would not know a thing about the faking! Now
+          the tests look like this.<br />
+          <br />
+          <pre><span style="color: maroon; font-weight: bold;">var</span> redis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'redis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> fakeredis <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'fakeredis'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> sinon <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'sinon'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: maroon; font-weight: bold;">var</span> assert <span style="color: #808030;">=</span> require<span style="color: #808030;">(</span><span style="color: #0000e6;">'assert'</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
@@ -147,10 +230,22 @@ describe<span style="color: #808030;">(</span><span style="color: #0000e6;">'isO
   <span style="color: purple;">}</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 <span style="color: purple;">}</span><span style="color: #808030;">)</span><span style="color: purple;">;</span>
 </pre>
-<pre><span style="color: purple;">
+          <pre><span style="color: purple;">
 </span></pre>
-As you can see I have added an <b>after</b> and an <b>afterEach</b> block. What the <b>after</b> block does should be obvious. It brings the <b>redis</b>.<b>createClient</b> function to the previous state.<br />
-<br />
-The <b>afterEach</b> block is more interresting. It adds the clean up step I stated earlier. It calls <b>client.flushdb</b> without hesitation because the the client object would only work with <b>fakeredis</b> data. As the name implies <b>afterEach</b> hook is called after each test so that it makes sure the next test is run on a fresh store.<br />
-<br /></div>
-</div>
+          As you can see I have added an <b>after</b> and an
+          <b>afterEach</b> block. What the <b>after</b> block does should be
+          obvious. It brings the <b>redis</b>.<b>createClient</b> function to
+          the previous state.<br />
+          <br />
+          The <b>afterEach</b> block is more interresting. It adds the clean up
+          step I stated earlier. It calls <b>client.flushdb</b> without
+          hesitation because the the client object would only work with
+          <b>fakeredis</b> data. As the name implies <b>afterEach</b> hook is
+          called after each test so that it makes sure the next test is run on a
+          fresh store.<br />
+          <br />
+        </div>
+      </div>
+    </body>
+  </div>
+</html>

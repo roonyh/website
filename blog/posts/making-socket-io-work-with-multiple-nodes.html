@@ -1,50 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Aruna Herath</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <div dir="ltr" style="text-align: left" trbidi="on">
+    <body>
+      <style>
+        html {
+          max-width: 70ch;
+          /* larger spacing on larger screens, very small spacing on tiny screens */
+          padding: calc(1vmin + 0.5rem);
+          /* shorthand for margin-left/margin-right */
+          margin-inline: auto;
+          /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+          font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+          /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+          font-family: system-ui;
+        }
 
-
-  <link rel="icon" type="image/png" href="images/favicon.png">
-</head><div dir="ltr" style="text-align: left;" trbidi="on">
-     <body>
-          <style>
-               html {
-                    max-width: 70ch;
-                    /* larger spacing on larger screens, very small spacing on tiny screens */
-                    padding: calc(1vmin + .5rem);
-                    /* shorthand for margin-left/margin-right */
-                    margin-inline: auto;
-                    /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
-                    font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
-                    /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
-                    font-family: system-ui
-                  }
-              
-                  /* increase line-height for everything except headings */
-                  body :not(:is(h1,h2,h3,h4,h5,h6)) {
-                    line-height: 1.75;
-                  }
-          </style>
-<a href="http://socket.io/">Socket.io</a> is the most popular websocket implementation library that is available to the application develeper. However for a long time it was full of bugs, had a lot of architectural issues and is not maintained. But changing all that socket.io version 1.0.0 came out. At this time the latest stable socket.io version is 1.1.0 and its so much improved.<br />
-<br />
-If you are excited about the websockets technology and socket.io helped you to explore it, you'd be delighted to here about this all new rebirth of it. But trying to migrate to the new version from the old one is where you'd lose most of that delight. Specially if you have multiple nodes running on your server for load balancing.<br />
-<br />
-When multiple nodes are running on the server side they collectively are responsible for handling the socket.io clients. Clients would not have much idea of which server node they are dealing with. This means that the server nodes need some common ground to share information about the clients on, so that any one of them can handle any client. In socket.io 0.9.* this ground is given the name <b>store</b>. A store can be implemented using any storage technology according to a store interface. The <b>redis-store</b> was the most used.<br />
-<br />
-There are many fundamental problems with this architecture. One of the main ones being that the store used will contain every single details about every single client that connects. This makes drastically decreases the possibility of horizontal scaling. It would work great for few nodes with limited number of subscribed clients but when the number of clients touch millions this should give a lot of problems. Another is that it is not possible to add new nodes to the cluster without taking the whole cluster down. This is because new nodes do not update with the data available with already running nodes and are unable to handle requests from the existing clients.<br />
-<br />
-So they have removed '<b>stores</b>' from the new socket.io version and rightly so.<br />
-<br />
-The successor of the <b>redis-store</b> will be <b><a href="https://www.npmjs.org/package/socket.io-redis" target="_blank">redis-adapter</a></b>. Here is how my diff looked like after the substitution of redis-adapter instead of the redis-store.<br />
-<br />
-<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;">     var sio = require('socket.io');
+        /* increase line-height for everything except headings */
+        body :not(:is(h1, h2, h3, h4, h5, h6)) {
+          line-height: 1.75;
+        }
+      </style>
+      <h1>Making socket.io Work With Multiple Nodes</h1>
+      <a href="http://socket.io/">Socket.io</a> is the most popular websocket
+      implementation library that is available to the application develeper.
+      However for a long time it was full of bugs, had a lot of architectural
+      issues and is not maintained. But changing all that socket.io version
+      1.0.0 came out. At this time the latest stable socket.io version is 1.1.0
+      and its so much improved.<br />
+      <br />
+      If you are excited about the websockets technology and socket.io helped
+      you to explore it, you'd be delighted to here about this all new rebirth
+      of it. But trying to migrate to the new version from the old one is where
+      you'd lose most of that delight. Specially if you have multiple nodes
+      running on your server for load balancing.<br />
+      <br />
+      When multiple nodes are running on the server side they collectively are
+      responsible for handling the socket.io clients. Clients would not have
+      much idea of which server node they are dealing with. This means that the
+      server nodes need some common ground to share information about the
+      clients on, so that any one of them can handle any client. In socket.io
+      0.9.* this ground is given the name <b>store</b>. A store can be
+      implemented using any storage technology according to a store interface.
+      The <b>redis-store</b> was the most used.<br />
+      <br />
+      There are many fundamental problems with this architecture. One of the
+      main ones being that the store used will contain every single details
+      about every single client that connects. This makes drastically decreases
+      the possibility of horizontal scaling. It would work great for few nodes
+      with limited number of subscribed clients but when the number of clients
+      touch millions this should give a lot of problems. Another is that it is
+      not possible to add new nodes to the cluster without taking the whole
+      cluster down. This is because new nodes do not update with the data
+      available with already running nodes and are unable to handle requests
+      from the existing clients.<br />
+      <br />
+      So they have removed '<b>stores</b>' from the new socket.io version and
+      rightly so.<br />
+      <br />
+      The successor of the <b>redis-store</b> will be
+      <b
+        ><a href="https://www.npmjs.org/package/socket.io-redis" target="_blank"
+          >redis-adapter</a
+        ></b
+      >. Here is how my diff looked like after the substitution of redis-adapter
+      instead of the redis-store.<br />
+      <br />
+      <div
+        style="
+          background: #ffffff;
+          border-width: 0.1em 0.1em 0.1em 0.8em;
+          border: solid gray;
+          overflow: auto;
+          padding: 0.2em 0.6em;
+          width: auto;
+        "
+      >
+        <pre
+          style="line-height: 125%; margin: 0"
+        >     var sio = require('socket.io');
      io = sio.listen(server);
  
 <span style="color: #a00000;">-    var subscriber = redis.createClient(</span>
@@ -61,27 +104,58 @@ The successor of the <b>redis-store</b> will be <b><a href="https://www.npmjs.or
 <span style="color: #00a000;">+    var redisadapter = require('socket.io-redis');</span>
 <span style="color: #00a000;">+    io.adapter(redisadapter({ host: config.redisHost, port: config.redisPort }));</span>
 </pre>
-</div>
-<br />
-But the migration does not end here. The new socket.io requires the nodes to have sticky sessions in order to operate.<br />
-<br />
-Sticky sessions ensures that a subsequent request would be forwarded to the same node that handled the previous requests corresponding to that request. So IP address based sticky sessions make sure that all the requests from a particular IP address is sent to the same node.<br />
-<br />
-How you should implement sticky sessions depends on the technology you use in the load balancer. If you are using Nginx it can be configured in the setup. Or if you are using pm2 you are <a href="https://github.com/Unitech/pm2/issues/389" target="_blank">not that lucky (yet)</a>.<br />
-<br />
-Or it is possible that you use the node cluster module for the load balancing. In that case '<b><a href="https://www.npmjs.org/package/sticky-session" target="_blank">sticky-session</a>'</b> node module should give you a hand. But its still not very mature and could have many more features. Anyway it works.<br />
-<br />
-Wrapping the server instance in sticky function should do it.<br />
-<br />
-<div style="background: #ffffff; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;"><span style="color: #00a000;">+    var sticky = require('sticky-session');</span>
+      </div>
+      <br />
+      But the migration does not end here. The new socket.io requires the nodes
+      to have sticky sessions in order to operate.<br />
+      <br />
+      Sticky sessions ensures that a subsequent request would be forwarded to
+      the same node that handled the previous requests corresponding to that
+      request. So IP address based sticky sessions make sure that all the
+      requests from a particular IP address is sent to the same node.<br />
+      <br />
+      How you should implement sticky sessions depends on the technology you use
+      in the load balancer. If you are using Nginx it can be configured in the
+      setup. Or if you are using pm2 you are
+      <a href="https://github.com/Unitech/pm2/issues/389" target="_blank"
+        >not that lucky (yet)</a
+      >.<br />
+      <br />
+      Or it is possible that you use the node cluster module for the load
+      balancing. In that case '<b
+        ><a href="https://www.npmjs.org/package/sticky-session" target="_blank"
+          >sticky-session</a
+        >'</b
+      >
+      node module should give you a hand. But its still not very mature and
+      could have many more features. Anyway it works.<br />
+      <br />
+      Wrapping the server instance in sticky function should do it.<br />
+      <br />
+      <div
+        style="
+          background: #ffffff;
+          border-width: 0.1em 0.1em 0.1em 0.8em;
+          border: solid gray;
+          overflow: auto;
+          padding: 0.2em 0.6em;
+          width: auto;
+        "
+      >
+        <pre
+          style="line-height: 125%; margin: 0"
+        ><span style="color: #00a000;">+    var sticky = require('sticky-session');</span>
 
 <span style="color: #a00000;">-    var server = http.createServer(handler);</span>
 <span style="color: #00a000;">+    var server = sticky(http.createServer(handler));</span>
 </pre>
-</div>
-<br />
-And now socket.io 1.1.0 starts working! Its really not that difficult but there are not much help around the internet to the migrater. Once many stackoverflow questions around are answered and many new tutorials are put up socket.io would be great to work with.<br />
-<br /></div>
-</body>
+      </div>
+      <br />
+      And now socket.io 1.1.0 starts working! Its really not that difficult but
+      there are not much help around the internet to the migrater. Once many
+      stackoverflow questions around are answered and many new tutorials are put
+      up socket.io would be great to work with.<br />
+      <br />
+    </body>
+  </div>
 </html>

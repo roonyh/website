@@ -1,66 +1,213 @@
-<div dir="ltr" style="text-align: left;" trbidi="on">
-Last few days I was getting myself familiar with an interesting project named <a href="https://github.com/ekita/sTeam/tree/steam-2.9-source" target="_blank">sTeam</a>. One of the things that makes it interesting is that its written in <a href="http://pike.lysator.liu.se/" target="_blank">pike</a>. Pike is the programming language that is used to write it.<br />
-<br />
-Don't worry if you haven't heard of pike. Many people have not. Its a relatively undescovered language. Average google search along the lines of "Pike tutorials" would not get you much other than this <a href="http://pike.lysator.liu.se/docs/tutorial/" target="_blank">official beginner tutorial</a>. The stackoverflow tag 'pike' has mere 8 subscribers. There is only the single official intrepretter and not many IDEs except for <a href="http://wiki.gotpike.org/PikeTools" target="_blank">an emacs mode and an eclipse plugin</a>. Text editor I use, gedit, by default does not know how to highlight syntax of a .pike file.<br />
-<br />
-But installing pike and trying it out makes you wonder.. why? why don't we use this more.<br />
-<br />
-Pike is very attractive just like an unseen hidden forrest flower.<br />
-<br />
-In my short career so far I have been lucky enough to use many languages. Most of my assignments in the university are to be done using C or Java. My final year project is done with <a href="https://github.com/diaspora/diaspora" target="_blank">Diaspora</a>, which is ruby. I coded python for <a href="https://code.google.com/p/soc/" target="_blank">melange</a> in Google summer of code. During an internship with <a href="http://www.ironone.com/" target="_blank">IroneOne</a> I worked mostly on an iOS app which is objective C. And my first task in my first job was building a nodejs application, which is Javascript. While going through the <a href="http://pike.lysator.liu.se/docs/tutorial/" target="_blank">tutorial</a>, I felt pike is made of good parts of many of those languages.<br />
-<br />
-<h4 style="text-align: left;">
-Duck Typing</h4>
-<br />
-There are both pros and cons of Duck Typing. While coding python, ruby and javascript code I felt great and previlaged to be able to use dynamic data typing. But it wasn't unclear to me, that some of the code that takes advantage of Duck typing could lead to problems. Specially if they are not documented or the documentation is not reffered. Sometimes it took some of my time to understand poorly documented javascript APIs.<br />
-<br />
-On the other hand, sometimes, In early days as an undergraduate I felt frustrated to not being able to return couple of integers and a string in a single array from a java function.<br />
-<br />
-Pike has a simple yet effective solution. In addition to its three basic types, int float and string it has another queer little type, mixed. You can specify a variable as mixed and and store any value irrespective of whether it is an int float string or even a complex type.<br />
-<br />
-Pike v7.8 release 866 running Hilfe v3.5 (Incremental Pike Frontend)<br />
-<br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; int a;</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; a = 7;</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>(1) Result: 7</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; a = "aruna"</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt;&gt; ;</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>Compiler Error: 3: Bad type in assignment.</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>Compiler Error: 3: Expected: int.</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>Compiler Error: 3: Got &nbsp; &nbsp; : string(0..255).</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b><br /></b></span>
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; mixed b; &nbsp;// using mixed type</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; b = 21;</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>(2) Result: 21</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt; b = "herath";</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>(3) Result: "herath"</b></span><br />
-<span style="font-family: Courier New, Courier, monospace;"><b>&gt;&nbsp;</b></span><br />
-<br />
-Arrays declared to hold mixed types, or not declared to hold any type, can contain values of mixed types. A function declared to return mixed type can return anything.<br />
-<br />
-<h4 style="text-align: left;">
-Syntax</h4>
-<br />
-I feel syntax in pike manages, again to get the best, most elagant bits out of the languages I am familiar with. It uses c style parantheses to identify scopes of funtions conditional and loop statesments. In my view much better than pythons awkward tabs/spaces.<br />
-<br />
-Outshining c it has a simple 'dictionary' data structure known as mappings, with elegant syntax.<br />
-<br />
-<span style="font-family: Courier New, Courier, monospace;"><b>mapping(string:string) batsmen = (["Sangakkara": "Sri Lanka", "Maxwell":"Australia", "Kohli": "India"])</b></span><br />
-<br />
-Arrays,<br />
-<br />
-<span style="font-family: Courier New, Courier, monospace;"><b>array(string) cricketers = ({"McCullum", "De Villiars", "Malinga", "O'Brien"})</b></span><br />
-<br />
-In my view pike syntax is pleasing to the eye...<br />
-<br />
-<h4 style="text-align: left;">
-Interpreter</h4>
-<br />
-You probably have guessed from whats mentioned so far that pike is interpreted. Yes, Pike comes with an official interpreter named <a href="http://pike.lysator.liu.se/generated/manual/ref/chapter_7.html" target="_blank">Hilfe</a>.<br />
-A real time interpreter is something I find very useful to learn a language. It is of great value when developing as well. You can just enter few lines in the interpreter and see if you got the syntax or the logic correct. It's much easier and quicker than writing a program and compiling and testing or looking through documentation.<br />
-<br />
-Further pike does not have many external libraries, but its distributed with <a href="http://pike.lysator.liu.se/about/pike/modules.xml" target="_blank">many modules</a> so you can get most of your work done with pike itself.<br />
-<br />
-In <a href="http://www.topgear.com/uk/" target="_blank">Top Gear</a> consumer advice style, pike would not treat you like a kid and hold you back from doing stuff freely, nor would it consider you a saint and over trust you with everything.<br />
-<br />
-It probably is not a good idea to use pike in your next big project, for the very little support you'd get, but definitely worth knowing about and trying it out in one of those pet projects.</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <div dir="ltr" style="text-align: left" trbidi="on">
+    <body>
+      <style>
+        html {
+          max-width: 70ch;
+          /* larger spacing on larger screens, very small spacing on tiny screens */
+          padding: calc(1vmin + 0.5rem);
+          /* shorthand for margin-left/margin-right */
+          margin-inline: auto;
+          /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+          font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+          /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+          font-family: system-ui;
+        }
+
+        /* increase line-height for everything except headings */
+        body :not(:is(h1, h2, h3, h4, h5, h6)) {
+          line-height: 1.75;
+        }
+      </style>
+      <h1>Pike, A Hidden Beauty</h1>
+      <div dir="ltr" style="text-align: left" trbidi="on">
+        Last few days I was getting myself familiar with an interesting project
+        named
+        <a
+          href="https://github.com/ekita/sTeam/tree/steam-2.9-source"
+          target="_blank"
+          >sTeam</a
+        >. One of the things that makes it interesting is that its written in
+        <a href="http://pike.lysator.liu.se/" target="_blank">pike</a>. Pike is
+        the programming language that is used to write it.<br />
+        <br />
+        Don't worry if you haven't heard of pike. Many people have not. Its a
+        relatively undescovered language. Average google search along the lines
+        of "Pike tutorials" would not get you much other than this
+        <a href="http://pike.lysator.liu.se/docs/tutorial/" target="_blank"
+          >official beginner tutorial</a
+        >. The stackoverflow tag 'pike' has mere 8 subscribers. There is only
+        the single official intrepretter and not many IDEs except for
+        <a href="http://wiki.gotpike.org/PikeTools" target="_blank"
+          >an emacs mode and an eclipse plugin</a
+        >. Text editor I use, gedit, by default does not know how to highlight
+        syntax of a .pike file.<br />
+        <br />
+        But installing pike and trying it out makes you wonder.. why? why don't
+        we use this more.<br />
+        <br />
+        Pike is very attractive just like an unseen hidden forrest flower.<br />
+        <br />
+        In my short career so far I have been lucky enough to use many
+        languages. Most of my assignments in the university are to be done using
+        C or Java. My final year project is done with
+        <a href="https://github.com/diaspora/diaspora" target="_blank"
+          >Diaspora</a
+        >, which is ruby. I coded python for
+        <a href="https://code.google.com/p/soc/" target="_blank">melange</a> in
+        Google summer of code. During an internship with
+        <a href="http://www.ironone.com/" target="_blank">IroneOne</a> I worked
+        mostly on an iOS app which is objective C. And my first task in my first
+        job was building a nodejs application, which is Javascript. While going
+        through the
+        <a href="http://pike.lysator.liu.se/docs/tutorial/" target="_blank"
+          >tutorial</a
+        >, I felt pike is made of good parts of many of those languages.<br />
+        <br />
+        <h4 style="text-align: left">Duck Typing</h4>
+        <br />
+        There are both pros and cons of Duck Typing. While coding python, ruby
+        and javascript code I felt great and previlaged to be able to use
+        dynamic data typing. But it wasn't unclear to me, that some of the code
+        that takes advantage of Duck typing could lead to problems. Specially if
+        they are not documented or the documentation is not reffered. Sometimes
+        it took some of my time to understand poorly documented javascript
+        APIs.<br />
+        <br />
+        On the other hand, sometimes, In early days as an undergraduate I felt
+        frustrated to not being able to return couple of integers and a string
+        in a single array from a java function.<br />
+        <br />
+        Pike has a simple yet effective solution. In addition to its three basic
+        types, int float and string it has another queer little type, mixed. You
+        can specify a variable as mixed and and store any value irrespective of
+        whether it is an int float string or even a complex type.<br />
+        <br />
+        Pike v7.8 release 866 running Hilfe v3.5 (Incremental Pike Frontend)<br />
+        <br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; int a;</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; a = 7;</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>(1) Result: 7</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; a = "aruna"</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt;&gt; ;</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>Compiler Error: 3: Bad type in assignment.</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>Compiler Error: 3: Expected: int.</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>Compiler Error: 3: Got &nbsp; &nbsp; : string(0..255).</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b><br /></b
+        ></span>
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; mixed b; &nbsp;// using mixed type</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; b = 21;</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>(2) Result: 21</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt; b = "herath";</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>(3) Result: "herath"</b></span
+        ><br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b>&gt;&nbsp;</b></span
+        ><br />
+        <br />
+        Arrays declared to hold mixed types, or not declared to hold any type,
+        can contain values of mixed types. A function declared to return mixed
+        type can return anything.<br />
+        <br />
+        <h4 style="text-align: left">Syntax</h4>
+        <br />
+        I feel syntax in pike manages, again to get the best, most elagant bits
+        out of the languages I am familiar with. It uses c style parantheses to
+        identify scopes of funtions conditional and loop statesments. In my view
+        much better than pythons awkward tabs/spaces.<br />
+        <br />
+        Outshining c it has a simple 'dictionary' data structure known as
+        mappings, with elegant syntax.<br />
+        <br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b
+            >mapping(string:string) batsmen = (["Sangakkara": "Sri Lanka",
+            "Maxwell":"Australia", "Kohli": "India"])</b
+          ></span
+        ><br />
+        <br />
+        Arrays,<br />
+        <br />
+        <span style="font-family: Courier New, Courier, monospace"
+          ><b
+            >array(string) cricketers = ({"McCullum", "De Villiars", "Malinga",
+            "O'Brien"})</b
+          ></span
+        ><br />
+        <br />
+        In my view pike syntax is pleasing to the eye...<br />
+        <br />
+        <h4 style="text-align: left">Interpreter</h4>
+        <br />
+        You probably have guessed from whats mentioned so far that pike is
+        interpreted. Yes, Pike comes with an official interpreter named
+        <a
+          href="http://pike.lysator.liu.se/generated/manual/ref/chapter_7.html"
+          target="_blank"
+          >Hilfe</a
+        >.<br />
+        A real time interpreter is something I find very useful to learn a
+        language. It is of great value when developing as well. You can just
+        enter few lines in the interpreter and see if you got the syntax or the
+        logic correct. It's much easier and quicker than writing a program and
+        compiling and testing or looking through documentation.<br />
+        <br />
+        Further pike does not have many external libraries, but its distributed
+        with
+        <a
+          href="http://pike.lysator.liu.se/about/pike/modules.xml"
+          target="_blank"
+          >many modules</a
+        >
+        so you can get most of your work done with pike itself.<br />
+        <br />
+        In
+        <a href="http://www.topgear.com/uk/" target="_blank">Top Gear</a>
+        consumer advice style, pike would not treat you like a kid and hold you
+        back from doing stuff freely, nor would it consider you a saint and over
+        trust you with everything.<br />
+        <br />
+        It probably is not a good idea to use pike in your next big project, for
+        the very little support you'd get, but definitely worth knowing about
+        and trying it out in one of those pet projects.
+      </div>
+    </body>
+  </div>
+</html>

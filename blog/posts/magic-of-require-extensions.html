@@ -1,22 +1,95 @@
-<div dir="ltr" style="text-align: left;" trbidi="on">
-<h3 style="text-align: left;">
-Magic of babel register</h3>
-<div>
-<br /></div>
-Some development tools are like magic. <a href="https://babeljs.io/docs/usage/require/" target="_blank">Babel require hook</a>, at least to me, is such a tool. Not only does it convert the flashy ES6 and ES7 to plain old ES5, which itself is quite awesome, it does so on the fly. You make one require call to <span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;">babel-register</span> and then require any js file with ES6/ES7 code and it just works!<br />
-<br />
-I needed to do something like what it does at work. So to learn how it work I peeked into&nbsp;<span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;">babel-register</span>'s&nbsp;<a href="https://github.com/babel/babel/tree/master/packages/babel-register" target="_blank">source</a>. It's very small. The the transpiling stuff is done by <a href="https://github.com/babel/babel/tree/master/packages/babel-core" target="_blank">babel core</a> so they were outside the source. I was after the stuff that does the require magic and within minutes I found what I was looking for.<br />
-<br />
-<h3 style="text-align: left;">
-Require extensions.</h3>
-<div>
-<br /></div>
-Require extensions allow you to define a function describing what to do when a file with a given extension is required. Can't get more flexible than that!<br />
-<br />
-Here is a way to extend <span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;">require</span> to text files.<br />
-<!-- HTML generated using hilite.me --><br />
-<div style="background: #ffffff; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;">fs <span style="color: #333333;">=</span> require(<span style="background-color: #fff0f0;">'fs'</span>);
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+    <body>
+      <style>
+        html {
+          max-width: 70ch;
+          /* larger spacing on larger screens, very small spacing on tiny screens */
+          padding: calc(1vmin + 0.5rem);
+          /* shorthand for margin-left/margin-right */
+          margin-inline: auto;
+          /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+          font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+          /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+          font-family: system-ui;
+        }
+
+        /* increase line-height for everything except headings */
+        body :not(:is(h1, h2, h3, h4, h5, h6)) {
+          line-height: 1.75;
+        }
+      </style>
+      <h1>Magic of Require Extensions</h1>
+      <div dir="ltr" style="text-align: left" trbidi="on">
+        <h3 style="text-align: left">Magic of babel register</h3>
+        <div>
+          <br />
+        </div>
+        Some development tools are like magic.
+        <a href="https://babeljs.io/docs/usage/require/" target="_blank"
+          >Babel require hook</a
+        >, at least to me, is such a tool. Not only does it convert the flashy
+        ES6 and ES7 to plain old ES5, which itself is quite awesome, it does so
+        on the fly. You make one require call to
+        <span style="font-family: 'courier new', 'courier', monospace"
+          >babel-register</span
+        >
+        and then require any js file with ES6/ES7 code and it just works!<br />
+        <br />
+        I needed to do something like what it does at work. So to learn how it
+        work I peeked into&nbsp;<span
+          style="font-family: 'courier new', 'courier', monospace"
+          >babel-register</span
+        >'s&nbsp;<a
+          href="https://github.com/babel/babel/tree/master/packages/babel-register"
+          target="_blank"
+          >source</a
+        >. It's very small. The the transpiling stuff is done by
+        <a
+          href="https://github.com/babel/babel/tree/master/packages/babel-core"
+          target="_blank"
+          >babel core</a
+        >
+        so they were outside the source. I was after the stuff that does the
+        require magic and within minutes I found what I was looking for.<br />
+        <br />
+        <h3 style="text-align: left">Require extensions.</h3>
+        <div>
+          <br />
+        </div>
+        Require extensions allow you to define a function describing what to do
+        when a file with a given extension is required. Can't get more flexible
+        than that!<br />
+        <br />
+        Here is a way to extend
+        <span style="font-family: 'courier new', 'courier', monospace"
+          >require</span
+        >
+        to text files.<br />
+        <!-- HTML generated using hilite.me --><br />
+        <div
+          style="
+            background: #ffffff;
+            border-width: 0.1em 0.1em 0.1em 0.8em;
+            border: solid gray;
+            overflow: auto;
+            padding: 0.2em 0.6em;
+            width: auto;
+          "
+        >
+          <pre
+            style="line-height: 125%; margin: 0"
+          >fs <span style="color: #333333;">=</span> require(<span style="background-color: #fff0f0;">'fs'</span>);
 
 <span style="color: #888888;">// Now you can require '.txt' files</span>
 require.extensions[<span style="background-color: #fff0f0;">'.txt'</span>] <span style="color: #333333;">=</span> (m, filename) <span style="color: #333333;">=&gt;</span> {
@@ -26,78 +99,203 @@ require.extensions[<span style="background-color: #fff0f0;">'.txt'</span>] <span
 <span style="color: #008800; font-weight: bold;">const</span> text <span style="color: #333333;">=</span> require(<span style="background-color: #fff0f0;">'./test.txt'</span>)
 console.log(text); <span style="color: #888888;">// Cool!</span>
 </pre>
-</div>
-<br />
-This is cool! But..<br />
-<br />
-<h3 style="text-align: left;">
-It's deprecated.</h3>
-<div>
-<br /></div>
-In fact its been deprecated for a while. Node versions as early as 0.10 <a href="https://nodejs.org/docs/latest-v0.10.x/api/globals.html#globals_require_extensions" target="_blank">documents it as deprecated</a>. But it has survived close to 3 years and many versions to appear in node version 6 as well. Even the <a href="https://nodejs.org/api/globals.html#globals_require_extensions" target="_blank">documentation</a> admits that its unlikely to go away.<br />
-<blockquote class="tr_bq">
-<span style="background-color: white; color: #333333; font-family: &quot;lato&quot; , &quot;lucida grande&quot; , &quot;lucida sans unicode&quot; , &quot;lucida sans&quot; , &quot;verdana&quot; , &quot;tahoma&quot; , sans-serif;">Since the Module system is locked, this feature will probably never go away.</span></blockquote>
-But it also say,<br />
-<blockquote class="tr_bq">
-<span style="background-color: white; color: #333333; font-family: &quot;lato&quot; , &quot;lucida grande&quot; , &quot;lucida sans unicode&quot; , &quot;lucida sans&quot; , &quot;verdana&quot; , &quot;tahoma&quot; , sans-serif;">However, it may have subtle bugs and complexities that are best left untouched.</span></blockquote>
-I don't know about its internal bugs. But complexities might occur because it may compel developers to publish non-javascript packages for javascript projects. For example someone can write the entire source of their package using TypeScript. And only in the entry point to the package use require extensions to register a require extension for <span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;">.ts</span>. This handler can use a <a href="https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function" target="_blank">transform function</a> to compile TypeScript to javascript dynamically.<br />
-<br />
-I can see two reasons why this is bad.<br />
-<ul style="text-align: left;">
-<li>Require extensions is global.</li>
-</ul>
-<blockquote class="tr_bq" style="text-align: left;">
-The <span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;">.ts</span> extension handler set by this package could be over-written by another package that use TypeScript.&nbsp;</blockquote>
-<blockquote class="tr_bq" style="text-align: left;">
-The second package could be using a compiler for a different version of TypeScript. Now that compiler will try to compile the first package's TypeScript sources and will break it!</blockquote>
-<ul style="text-align: left;">
-<li>Compilation unnecessarily takes time</li>
-</ul>
-<blockquote class="tr_bq">
-When an application developer install the package written in TypeScript he/she will be compiling it every time their app is run. But the packages source won't change. So they will be compiling the same source files over and over again.</blockquote>
-If the source is precompiled and published these problems does not occur.<br />
-<br />
-Its not hard to understand that using require extensions this way should be avoided. But what about using it for development? Development is where we use babel-register. Development is where I needed it too.<br />
-<br />
-<h3 style="text-align: left;">
-My Use-case</h3>
-<div>
-<br /></div>
-Many projects run tests for front end code in node. Many projects use webpack to compile front end code from jsx and ES6/ES7 stuff to plain js. With webpack we can use special require calls that invoke webpack loaders. For this reason test tools like jest, enzyme and others need some special configuration to work with webpack. In kadirahq's <a href="https://github.com/kadirahq/storyshots" target="_blank">storyshots</a> project we provide an easy way for these projects to run snapshot tests. For more info read <a href="https://voice.kadira.io/snapshot-testing-in-react-storybook-43b3b71cec4f" target="_blank">its introduction on Kadira voice</a>. In storyshots we have a simple setup that use babel-register, and we needed it to work with webpack loaders.<br />
-<br />
-So if we want a to run the front end code on node we have to run webpack on node. Tests are run often so should run fast. Running webpack and saving a file and then requiring it again takes time. It's common for a webpack build to take around 5 seconds. That is what we tried to avoid with require extensions.<br />
-<br />
-We made a substitute for webpack loaders in a few lines using require extensions.<br />
-<!-- HTML generated using hilite.me --><br />
-<div style="background: #ffffff; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;"><span style="color: #008800; font-weight: bold;">const</span> loader <span style="color: #333333;">=</span> loaders[ext];
+        </div>
+        <br />
+        This is cool! But..<br />
+        <br />
+        <h3 style="text-align: left">It's deprecated.</h3>
+        <div>
+          <br />
+        </div>
+        In fact its been deprecated for a while. Node versions as early as 0.10
+        <a
+          href="https://nodejs.org/docs/latest-v0.10.x/api/globals.html#globals_require_extensions"
+          target="_blank"
+          >documents it as deprecated</a
+        >. But it has survived close to 3 years and many versions to appear in
+        node version 6 as well. Even the
+        <a
+          href="https://nodejs.org/api/globals.html#globals_require_extensions"
+          target="_blank"
+          >documentation</a
+        >
+        admits that its unlikely to go away.<br />
+        <blockquote class="tr_bq">
+          <span
+            style="
+              background-color: white;
+              color: #333333;
+              font-family: 'lato', 'lucida grande', 'lucida sans unicode',
+                'lucida sans', 'verdana', 'tahoma', sans-serif;
+            "
+            >Since the Module system is locked, this feature will probably never
+            go away.</span
+          >
+        </blockquote>
+        But it also say,<br />
+        <blockquote class="tr_bq">
+          <span
+            style="
+              background-color: white;
+              color: #333333;
+              font-family: 'lato', 'lucida grande', 'lucida sans unicode',
+                'lucida sans', 'verdana', 'tahoma', sans-serif;
+            "
+            >However, it may have subtle bugs and complexities that are best
+            left untouched.</span
+          >
+        </blockquote>
+        I don't know about its internal bugs. But complexities might occur
+        because it may compel developers to publish non-javascript packages for
+        javascript projects. For example someone can write the entire source of
+        their package using TypeScript. And only in the entry point to the
+        package use require extensions to register a require extension for
+        <span style="font-family: 'courier new', 'courier', monospace">.ts</span
+        >. This handler can use a
+        <a
+          href="https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function"
+          target="_blank"
+          >transform function</a
+        >
+        to compile TypeScript to javascript dynamically.<br />
+        <br />
+        I can see two reasons why this is bad.<br />
+        <ul style="text-align: left">
+          <li>Require extensions is global.</li>
+        </ul>
+        <blockquote class="tr_bq" style="text-align: left">
+          The
+          <span style="font-family: 'courier new', 'courier', monospace"
+            >.ts</span
+          >
+          extension handler set by this package could be over-written by another
+          package that use TypeScript.&nbsp;
+        </blockquote>
+        <blockquote class="tr_bq" style="text-align: left">
+          The second package could be using a compiler for a different version
+          of TypeScript. Now that compiler will try to compile the first
+          package's TypeScript sources and will break it!
+        </blockquote>
+        <ul style="text-align: left">
+          <li>Compilation unnecessarily takes time</li>
+        </ul>
+        <blockquote class="tr_bq">
+          When an application developer install the package written in
+          TypeScript he/she will be compiling it every time their app is run.
+          But the packages source won't change. So they will be compiling the
+          same source files over and over again.
+        </blockquote>
+        If the source is precompiled and published these problems does not
+        occur.<br />
+        <br />
+        Its not hard to understand that using require extensions this way should
+        be avoided. But what about using it for development? Development is
+        where we use babel-register. Development is where I needed it too.<br />
+        <br />
+        <h3 style="text-align: left">My Use-case</h3>
+        <div>
+          <br />
+        </div>
+        Many projects run tests for front end code in node. Many projects use
+        webpack to compile front end code from jsx and ES6/ES7 stuff to plain
+        js. With webpack we can use special require calls that invoke webpack
+        loaders. For this reason test tools like jest, enzyme and others need
+        some special configuration to work with webpack. In kadirahq's
+        <a href="https://github.com/kadirahq/storyshots" target="_blank"
+          >storyshots</a
+        >
+        project we provide an easy way for these projects to run snapshot tests.
+        For more info read
+        <a
+          href="https://voice.kadira.io/snapshot-testing-in-react-storybook-43b3b71cec4f"
+          target="_blank"
+          >its introduction on Kadira voice</a
+        >. In storyshots we have a simple setup that use babel-register, and we
+        needed it to work with webpack loaders.<br />
+        <br />
+        So if we want a to run the front end code on node we have to run webpack
+        on node. Tests are run often so should run fast. Running webpack and
+        saving a file and then requiring it again takes time. It's common for a
+        webpack build to take around 5 seconds. That is what we tried to avoid
+        with require extensions.<br />
+        <br />
+        We made a substitute for webpack loaders in a few lines using require
+        extensions.<br />
+        <!-- HTML generated using hilite.me --><br />
+        <div
+          style="
+            background: #ffffff;
+            border-width: 0.1em 0.1em 0.1em 0.8em;
+            border: solid gray;
+            overflow: auto;
+            padding: 0.2em 0.6em;
+            width: auto;
+          "
+        >
+          <pre
+            style="line-height: 125%; margin: 0"
+          ><span style="color: #008800; font-weight: bold;">const</span> loader <span style="color: #333333;">=</span> loaders[ext];
 
 require.extensions[<span style="background-color: #ffaaaa; color: red;">`</span>.${ext}<span style="background-color: #ffaaaa; color: red;">`</span>] <span style="color: #333333;">=</span> (m, filepath) <span style="color: #333333;">=&gt;</span> {
   m.exports <span style="color: #333333;">=</span> loader(filepath);
 };
 </pre>
-</div>
-<br />
-The&nbsp;<b style="font-family: &quot;courier new&quot;, courier, monospace;">loader&nbsp;</b>function&nbsp;mimics some loader for the file extension <span style="font-family: &quot;courier new&quot; , &quot;courier&quot; , monospace;"><b>ext</b></span>.<br />
-<br />
-For example following mimics the url loader for jpgs.<br />
-<!-- HTML generated using hilite.me --><br />
-<div style="background: #ffffff; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;">loaders[<span style="background-color: #fff0f0;">'jpg'</span>] <span style="color: #333333;">=</span> filepath <span style="color: #333333;">=&gt;</span> filepath;
+        </div>
+        <br />
+        The&nbsp;<b style="font-family: 'courier new', courier, monospace"
+          >loader&nbsp;</b
+        >function&nbsp;mimics some loader for the file extension
+        <span style="font-family: 'courier new', 'courier', monospace"
+          ><b>ext</b></span
+        >.<br />
+        <br />
+        For example following mimics the url loader for jpgs.<br />
+        <!-- HTML generated using hilite.me --><br />
+        <div
+          style="
+            background: #ffffff;
+            border-width: 0.1em 0.1em 0.1em 0.8em;
+            border: solid gray;
+            overflow: auto;
+            padding: 0.2em 0.6em;
+            width: auto;
+          "
+        >
+          <pre
+            style="line-height: 125%; margin: 0"
+          >loaders[<span style="background-color: #fff0f0;">'jpg'</span>] <span style="color: #333333;">=</span> filepath <span style="color: #333333;">=&gt;</span> filepath;
 </pre>
-</div>
-<br />
-If we consider css content is not important for our tests, because say we only need to test if we add the correct css classes at correct places, we can ignore css with a loader function like following.<br />
-<!-- HTML generated using hilite.me --><br />
-<div style="background: #ffffff; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-<pre style="line-height: 125%; margin: 0;">loaders[<span style="background-color: #fff0f0;">'css'</span>] <span style="color: #333333;">=</span> () <span style="color: #333333;">=&gt;</span> <span style="color: #008800; font-weight: bold;">null</span>;
+        </div>
+        <br />
+        If we consider css content is not important for our tests, because say
+        we only need to test if we add the correct css classes at correct
+        places, we can ignore css with a loader function like following.<br />
+        <!-- HTML generated using hilite.me --><br />
+        <div
+          style="
+            background: #ffffff;
+            border-width: 0.1em 0.1em 0.1em 0.8em;
+            border: solid gray;
+            overflow: auto;
+            padding: 0.2em 0.6em;
+            width: auto;
+          "
+        >
+          <pre
+            style="line-height: 125%; margin: 0"
+          >loaders[<span style="background-color: #fff0f0;">'css'</span>] <span style="color: #333333;">=</span> () <span style="color: #333333;">=&gt;</span> <span style="color: #008800; font-weight: bold;">null</span>;
 </pre>
-</div>
-<br />
-<br />
-<h3 style="text-align: left;">
-Useful enough to take a measured risk</h3>
-<div>
-<br /></div>
-Transpilers are put to heavy use these days with lots of react and ES6 development going on. If dared to be used, require extensions could help to develop more magic-like tools like babel-register.<br />
-<br /></div>
+        </div>
+        <br />
+        <br />
+        <h3 style="text-align: left">Useful enough to take a measured risk</h3>
+        <div>
+          <br />
+        </div>
+        Transpilers are put to heavy use these days with lots of react and ES6
+        development going on. If dared to be used, require extensions could help
+        to develop more magic-like tools like babel-register.<br />
+        <br />
+      </div>
+    </body>
+</html>

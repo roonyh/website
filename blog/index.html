@@ -1,25 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Aruna Herath</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <body>
+    <style>
+      html {
+        max-width: 70ch;
+        /* larger spacing on larger screens, very small spacing on tiny screens */
+        padding: calc(1vmin + 0.5rem);
+        /* shorthand for margin-left/margin-right */
+        margin-inline: auto;
+        /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+        font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+        /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+        font-family: system-ui;
+      }
 
-  <link rel="stylesheet" href="/css/normalize.css">
-  <link rel="stylesheet" href="/css/skeleton.css">
+      /* increase line-height for everything except headings */
+      body :not(:is(h1, h2, h3, h4, h5, h6)) {
+        line-height: 1.75;
+      }
 
-  <link rel="icon" type="image/png" href="images/favicon.png">
-</head>
-    <a href="https://www.arunaherath.com/blog/posts/a-new-module-system-for-node.html">A New Module System for Node</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/magic-of-require-extensions.html">Magic of Require Extensions</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/making-socket-io-work-with-multiple-nodes.html">Making socket.io Work With Multiple Nodes</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/gci-mentoring-with-FOSSASIA.html">GCI Mentoring With FOSSASIA</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/pike-a-hidden-beauty.html">Pike, A Hidden Beauty</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/displaying-sinhala-characters-on-the-web.html">Displaying Sinhala Characters on the Web</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/uploading-files-to-mongo-db-without-express.html">Uploading Files To Mongo DB Without Express</a><br>
-    <a href="https://www.arunaherath.com/blog/posts/faking-redis-with-fakeredis.html">Faking Redis with Fakeredis</a><br>
+      a {
+        color: rgb(35, 35, 35);
+      }
+    </style>
+    <h1><a href="/">Aruna Herath</a>'s Blog</h1>
+    <ul>
+      <li>
+        2016/10/18
+        <a
+          href="posts/a-new-module-system-for-node.html"
+          >A New Module System for Node</a
+        >
+      </li>
+      <li>
+        2016/09/28
+        <a
+          href="posts/magic-of-require-extensions.html"
+          >Magic of Require Extensions</a
+        >
+      </li>
+      <li>
+        2015/05/07
+        <a
+          href="posts/displaying-sinhala-characters-on-the-web.html"
+          >Displaying Sinhala Characters on the Web</a
+        >
+      </li>
+      <li>
+        2015/03/16
+        <a
+          href="posts/pike-a-hidden-beauty.html"
+          >Pike, A Hidden Beauty</a
+        >
+      </li>
+      <li>
+        2015/01/22
+        <a
+          href="posts/gci-mentoring-with-FOSSASIA.html"
+          >GCI Mentoring With FOSSASIA</a
+        >
+      </li>
+      <li>
+        2014/10/21
+        <a
+          href="posts/making-socket-io-work-with-multiple-nodes.html"
+          >Making socket.io Work With Multiple Nodes</a
+        >
+      </li>
+      <li>
+        2014/07/22
+        <a
+          href="posts/uploading-files-to-mongo-db-without-express.html"
+          >Uploading Files To Mongo DB Without Express</a
+        >
+      </li>
+      <li>
+        2014/06/28
+        <a
+          href="posts/faking-redis-with-fakeredis.html"
+          >Faking Redis with Fakeredis</a
+        >
+      </li>
+    </ul>
+  </body>
 </html>

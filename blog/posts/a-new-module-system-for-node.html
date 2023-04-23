@@ -1,58 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Aruna Herath</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <body>
+    <style>
+      html {
+        max-width: 70ch;
+        /* larger spacing on larger screens, very small spacing on tiny screens */
+        padding: calc(1vmin + 0.5rem);
+        /* shorthand for margin-left/margin-right */
+        margin-inline: auto;
+        /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+        font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+        /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+        font-family: system-ui;
+      }
 
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-
-  <link rel="icon" type="image/png" href="images/favicon.png">
-</head>
-<body>
-<p>Node.js does not need a new module system. Its existing implementation of a CommonJS module system works great. Even Facebook apparently <a href="https://github.com/facebookarchive/node-haste#unsupportedarchived">gave up</a> developing their internal module system, Haste. So the module system I am building is not of any production value but is just a fun weekend project.</p>
-<h3 id="how-it-will-work">How it will work</h3>
-<p>I name this new module system <code>node-get</code> because <code>get</code> is the global used to load new modules with it. There&#39;s an executable named <code>node-get</code> that can be installed using <code>npm -g node-get-modules</code>. You can run it just like the <code>node</code> executable.</p>
-<pre><code>$ node-get hello.js
-</code></pre><p>Where <code>hello.js</code> is a JavaScript file that uses <code>node-get</code> module system. Here&#39;s an example.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
+      /* increase line-height for everything except headings */
+      body :not(:is(h1, h2, h3, h4, h5, h6)) {
+        line-height: 1.75;
+      }
+    </style>
+    <h1>A New Module System for Node</h1>
+    <p>
+      Node.js does not need a new module system. Its existing implementation of
+      a CommonJS module system works great. Even Facebook apparently
+      <a
+        href="https://github.com/facebookarchive/node-haste#unsupportedarchived"
+        >gave up</a
+      >
+      developing their internal module system, Haste. So the module system I am
+      building is not of any production value but is just a fun weekend project.
+    </p>
+    <h3 id="how-it-will-work">How it will work</h3>
+    <p>
+      I name this new module system <code>node-get</code> because
+      <code>get</code> is the global used to load new modules with it.
+      There&#39;s an executable named <code>node-get</code> that can be
+      installed using <code>npm -g node-get-modules</code>. You can run it just
+      like the <code>node</code> executable.
+    </p>
+    <pre><code>$ node-get hello.js
+</code></pre>
+    <p>
+      Where <code>hello.js</code> is a JavaScript file that uses
+      <code>node-get</code> module system. Here&#39;s an example.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
 <span class="hljs-keyword">const</span> capitalize = <span class="hljs-built_in">get</span>(<span class="hljs-string">'capitalize.js'</span>);
 <span class="hljs-keyword">const</span> hello = capitalize(<span class="hljs-string">'hello world!'</span>);
 console.<span class="hljs-built_in">log</span>(hello) <span class="hljs-comment">// Prints Hello World!</span>
 </code></pre>
-<p>But in this post, I&#39;ll use node directly to run it because it requires no set up and works anywhere.</p>
-<pre><code>$ node node-get.js hello.js
-</code></pre><p>I am using Node.js version 6 to build <code>node-get</code> so the code here uses ES6 syntax. Everything should work in node version 4 as well.</p>
-<h3 id="-vm-module"><code>vm</code> module</h3>
-<p>First, I want to introduce you the <a href="https://nodejs.org/api/vm.html"><code>vm</code> module</a> from Node.js. <code>vm</code>&#39;s responsibility is executing JavaScript. Every single JavaScript file you write in your Node.js app must contact this module at some point to have it executed.</p>
-<p><code>vm</code> provides two methods to facilitate this.</p>
-<ul>
-<li>vm.runInNewContext(someJSCode, theNewContext)</li>
-<li>vm.runInThisContext(someJSCode)</li>
-</ul>
-<p><em>Context</em> in these methods refer to the global state. Both methods execute the JavaScript code stored in string variable <code>someJSCode</code>. They differ only by the global variables they allow <code>someJSCode</code> to use.</p>
-<p><code>runInThisContext</code> makes a brand new set of variables and functions using entries in <code>theNewContext</code> object and makes them available to <code>someJSCode</code> as globals.</p>
-<p><code>runInThisContext</code> makes all the globals available to the script that runs it, to be available to <code>someJSCode</code> as well.</p>
-<p>I will get to these methods the moment I start building the new module system.</p>
-<h3 id="the-job-of-a-module-system">The job of a module system</h3>
-<p>It&#39;s the job a module system to read contents of JavaScript files and run their content using the vm module. It should help these files communicate by passing results of the callee to the caller.</p>
-<p>The Node.js module system, with <code>require</code> and <code>exports</code>, does just that and so will my new module system.</p>
-<h3 id="i-start-coding">I start coding</h3>
-<p>I&#39;ll start to code; feel free to follow along if you like.</p>
-<p>First I&#39;ll create two files.</p>
-<p><code>node-get.js</code> will contain the actual code of <code>node-get</code>, my new module system.
-<code>hello.js</code> will contain the JavaScript code that I will run using node-get. It will demonstrate the features of <code>node-get</code></p>
-<p>I&#39;ll put some code in hello.js.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
+    <p>
+      But in this post, I&#39;ll use node directly to run it because it requires
+      no set up and works anywhere.
+    </p>
+    <pre><code>$ node node-get.js hello.js
+</code></pre>
+    <p>
+      I am using Node.js version 6 to build <code>node-get</code> so the code
+      here uses ES6 syntax. Everything should work in node version 4 as well.
+    </p>
+    <h3 id="-vm-module"><code>vm</code> module</h3>
+    <p>
+      First, I want to introduce you the
+      <a href="https://nodejs.org/api/vm.html"><code>vm</code> module</a> from
+      Node.js. <code>vm</code>&#39;s responsibility is executing JavaScript.
+      Every single JavaScript file you write in your Node.js app must contact
+      this module at some point to have it executed.
+    </p>
+    <p><code>vm</code> provides two methods to facilitate this.</p>
+    <ul>
+      <li>vm.runInNewContext(someJSCode, theNewContext)</li>
+      <li>vm.runInThisContext(someJSCode)</li>
+    </ul>
+    <p>
+      <em>Context</em> in these methods refer to the global state. Both methods
+      execute the JavaScript code stored in string variable
+      <code>someJSCode</code>. They differ only by the global variables they
+      allow <code>someJSCode</code> to use.
+    </p>
+    <p>
+      <code>runInThisContext</code> makes a brand new set of variables and
+      functions using entries in <code>theNewContext</code> object and makes
+      them available to <code>someJSCode</code> as globals.
+    </p>
+    <p>
+      <code>runInThisContext</code> makes all the globals available to the
+      script that runs it, to be available to <code>someJSCode</code> as well.
+    </p>
+    <p>
+      I will get to these methods the moment I start building the new module
+      system.
+    </p>
+    <h3 id="the-job-of-a-module-system">The job of a module system</h3>
+    <p>
+      It&#39;s the job a module system to read contents of JavaScript files and
+      run their content using the vm module. It should help these files
+      communicate by passing results of the callee to the caller.
+    </p>
+    <p>
+      The Node.js module system, with <code>require</code> and
+      <code>exports</code>, does just that and so will my new module system.
+    </p>
+    <h3 id="i-start-coding">I start coding</h3>
+    <p>I&#39;ll start to code; feel free to follow along if you like.</p>
+    <p>First I&#39;ll create two files.</p>
+    <p>
+      <code>node-get.js</code> will contain the actual code of
+      <code>node-get</code>, my new module system. <code>hello.js</code> will
+      contain the JavaScript code that I will run using node-get. It will
+      demonstrate the features of <code>node-get</code>
+    </p>
+    <p>I&#39;ll put some code in hello.js.</p>
+    <pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
 console.<span class="hljs-built-in">log</span>(<span class="hljs-string">'hello world!'</span>);
 </code></pre>
-<p>I&#39;ll start <code>node-get.js</code> with following code. It&#39;s using <code>runInNewContext</code> from the <code>vm</code> module.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
+    <p>
+      I&#39;ll start <code>node-get.js</code> with following code. It&#39;s
+      using <code>runInNewContext</code> from the <code>vm</code> module.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 
 <span class="hljs-comment">// Read the module</span>
@@ -64,44 +140,94 @@ context = {};
 <span class="hljs-comment">// Execute JavaScript from hello.js</span>
 vm.runInNewContext(moduleJs, context)
 </code></pre>
-<p>I am extracting the content of hello.js into a variable named <code>moduleJS</code> and executing them using the introduced <code>vm.runInNewContext</code>. Since <code>context</code> is just an empty object, JavaScript in <code>moduleJS</code> does not have access to any global variables.</p>
-<p>I&#39;ll run the program to see how it go.</p>
-<pre><code>$ node node-get.js hello.js
-</code></pre><p>Aaaand error!</p>
-<pre><code>evalmachine.&lt;anonymous&gt;:3
+    <p>
+      I am extracting the content of hello.js into a variable named
+      <code>moduleJS</code> and executing them using the introduced
+      <code>vm.runInNewContext</code>. Since <code>context</code> is just an
+      empty object, JavaScript in <code>moduleJS</code> does not have access to
+      any global variables.
+    </p>
+    <p>I&#39;ll run the program to see how it go.</p>
+    <pre><code>$ node node-get.js hello.js
+</code></pre>
+    <p>Aaaand error!</p>
+    <pre><code>evalmachine.&lt;anonymous&gt;:3
 console.log(&#39;hello world!&#39;);
 ^
 ReferenceError: console is not defined
-</code></pre><h3 id="enlightnment-conosole-is-not-javascript">Enlightnment: <code>conosole</code> is not JavaScript</h3>
-<p>When I&#39;m writing JavaScript, irrespective of whether it&#39;s for the browser or Node.js, I use <code>console.log</code> statements a lot. And they work every time. So naturally I thought it will work inside <code>vm</code>. I guess subconsciously I thought that <code>console</code> is a part of JavaScript. But as it turns out it&#39;s just a global provided by the environment.</p>
-<p>Above I used <code>runInNewContext</code>. So in this new context there is no <code>console</code> defined. One way to fix it is to add <code>console</code> to the context.</p>
-<pre><code class="lang-js"><span class="hljs-built_in">context</span> = {console}<span class="hljs-comment">; // Now contex has a console</span>
+</code></pre>
+    <h3 id="enlightnment-conosole-is-not-javascript">
+      Enlightnment: <code>conosole</code> is not JavaScript
+    </h3>
+    <p>
+      When I&#39;m writing JavaScript, irrespective of whether it&#39;s for the
+      browser or Node.js, I use <code>console.log</code> statements a lot. And
+      they work every time. So naturally I thought it will work inside
+      <code>vm</code>. I guess subconsciously I thought that
+      <code>console</code> is a part of JavaScript. But as it turns out it&#39;s
+      just a global provided by the environment.
+    </p>
+    <p>
+      Above I used <code>runInNewContext</code>. So in this new context there is
+      no <code>console</code> defined. One way to fix it is to add
+      <code>console</code> to the context.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-built_in">context</span> = {console}<span class="hljs-comment">; // Now contex has a console</span>
 vm.runInNewContext(moduleJs, <span class="hljs-built_in">context</span>)<span class="hljs-comment">;</span>
 </code></pre>
-<p>This does work for now, But <code>console</code> is not the only global that we may use in our modules. There is a <a href="https://nodejs.org/api/globals.html">whole list of them</a> documented in Node.js documentation. <code>process</code>, <code>Buffer</code>, <code>setTimeout</code>, to name a few.</p>
-<p>So if I want to pass in all the globals I&#39;ll have to do something like,</p>
-<pre><code>vm.runInNewContext(moduleJs, {...globals})
-</code></pre><p>But remembering that I have another method from <code>vm</code> at my disposal, I will use it instead.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
+    <p>
+      This does work for now, But <code>console</code> is not the only global
+      that we may use in our modules. There is a
+      <a href="https://nodejs.org/api/globals.html">whole list of them</a>
+      documented in Node.js documentation. <code>process</code>,
+      <code>Buffer</code>, <code>setTimeout</code>, to name a few.
+    </p>
+    <p>
+      So if I want to pass in all the globals I&#39;ll have to do something
+      like,
+    </p>
+    <pre><code>vm.runInNewContext(moduleJs, {...globals})
+</code></pre>
+    <p>
+      But remembering that I have another method from <code>vm</code> at my
+      disposal, I will use it instead.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 
 <span class="hljs-keyword">const</span> moduleJs = fs.readFileSync(<span class="hljs-string">'./hello.js'</span>);
 vm.runInThisContext(moduleJs);
 </code></pre>
-<p><code>hello.js</code> now have access to any global available to <code>node-get.js</code>. It works now!</p>
-<pre><code>$ node node-get.js hello.js
+    <p>
+      <code>hello.js</code> now have access to any global available to
+      <code>node-get.js</code>. It works now!
+    </p>
+    <pre><code>$ node node-get.js hello.js
 hello world!
-</code></pre><h3 id="the-get-">The <code>get</code></h3>
-<p>I will now add the <code>get</code> global so <code>hello.js</code> can load JavaScript from other files as well.</p>
-<p>I will define this function inside <code>node-get.js</code> but I intend to use it inside <code>hello.js</code> and inside any other module that <code>hello.js</code> might load(<code>get</code>).</p>
-<p>Remember that any global available to <code>node-get.js</code> is available to JavaScript code that goes through <code>runInThisContext</code>. So we need to define <code>get</code> as a global inside <code>node-get.js</code>.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">global</span>.<span class="hljs-keyword">get</span> = filename =&gt; {
+</code></pre>
+    <h3 id="the-get-">The <code>get</code></h3>
+    <p>
+      I will now add the <code>get</code> global so <code>hello.js</code> can
+      load JavaScript from other files as well.
+    </p>
+    <p>
+      I will define this function inside <code>node-get.js</code> but I intend
+      to use it inside <code>hello.js</code> and inside any other module that
+      <code>hello.js</code> might load(<code>get</code>).
+    </p>
+    <p>
+      Remember that any global available to <code>node-get.js</code> is
+      available to JavaScript code that goes through
+      <code>runInThisContext</code>. So we need to define <code>get</code> as a
+      global inside <code>node-get.js</code>.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">global</span>.<span class="hljs-keyword">get</span> = filename =&gt; {
   <span class="hljs-keyword">const</span> loadedJS = fs.readFileSync(filename)
   vm.runInThisContext(loadedJS);
 }
 </code></pre>
-<p>With that, my <code>node-get.js</code> looks like this.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
+    <p>With that, my <code>node-get.js</code> looks like this.</p>
+    <pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
 <span class="hljs-keyword">const</span> vm = <span class="hljs-keyword">require</span>(<span class="hljs-string">'vm'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-keyword">require</span>(<span class="hljs-string">'fs'</span>);
 
@@ -112,45 +238,66 @@ hello world!
 
 <span class="hljs-keyword">global</span>.get(process.argv[<span class="hljs-number">2</span>])
 </code></pre>
-<p>Note that I am using <code>process.argv[2]</code> to get the entry point to the app instead of hardcoded <code>hello.js</code>.</p>
-<p>This entry point module have access to <code>get</code> as a global and any module that&#39;s loaded using <code>get(&#39;any JS file&#39;)</code> will to. So recursively any module in the example project can use get.</p>
-<p>To demonstrate these capabilities of <code>node-get</code>, from <code>hello.js</code> I will <code>get</code> a file named <code>cat.js</code> and from within this <code>cat.js</code> I will <code>get</code> another file named <code>mouse.js</code>. All files contain some dumb <code>console.log</code> statement.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
+    <p>
+      Note that I am using <code>process.argv[2]</code> to get the entry point
+      to the app instead of hardcoded <code>hello.js</code>.
+    </p>
+    <p>
+      This entry point module have access to <code>get</code> as a global and
+      any module that&#39;s loaded using
+      <code>get(&#39;any JS file&#39;)</code> will to. So recursively any module
+      in the example project can use get.
+    </p>
+    <p>
+      To demonstrate these capabilities of <code>node-get</code>, from
+      <code>hello.js</code> I will <code>get</code> a file named
+      <code>cat.js</code> and from within this <code>cat.js</code> I will
+      <code>get</code> another file named <code>mouse.js</code>. All files
+      contain some dumb <code>console.log</code> statement.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
 <span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-string">'hello world!'</span>);
 <span class="hljs-selector-tag">get</span>(<span class="hljs-string">'./cat.js'</span>)
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
 console.log(<span class="hljs-string">'hello, I am a cat.'</span>)
 <span class="hljs-function"><span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-string">'./mouse.js'</span>)</span></span>
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
 console.<span class="hljs-built-in">log</span>(<span class="hljs-string">'hello, I am a mouse.'</span>)
 </code></pre>
-<p>Run <code>node node-get.js hello.js</code>; Aaaand...</p>
-<pre><code>$ node node-get.js hello.js
+    <p>Run <code>node node-get.js hello.js</code>; Aaaand...</p>
+    <pre><code>$ node node-get.js hello.js
 hello world!
 hello, I am a cat.
 hello, I am a mouse.
-</code></pre><p>Success!</p>
-<h3 id="module-scope">Module scope</h3>
-<p>So, for now, everything seems to work fine. Let&#39;s add more JavaScript to our modules. I&#39;ll start with variables.
-I will define a variable named <code>name</code> in each of <code>cat.js</code> and <code>mouse.js</code> modules.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
+</code></pre>
+    <p>Success!</p>
+    <h3 id="module-scope">Module scope</h3>
+    <p>
+      So, for now, everything seems to work fine. Let&#39;s add more JavaScript
+      to our modules. I&#39;ll start with variables. I will define a variable
+      named <code>name</code> in each of <code>cat.js</code> and
+      <code>mouse.js</code> modules.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
 <span class="hljs-keyword">const</span> name = <span class="hljs-string">'Tom'</span>
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`hello, I am a cat named <span class="hljs-subst">${name}</span>`</span>);
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
 <span class="hljs-keyword">const</span> name = <span class="hljs-string">'Jerry'</span>
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`hello, I am a mouse named <span class="hljs-subst">${name}</span>`</span>);
 </code></pre>
-<p>This time, I will <code>get</code> both modules in <code>hello.js</code></p>
-<pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
+    <p>
+      This time, I will <code>get</code> both modules in <code>hello.js</code>
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
 <span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-string">'hello world!'</span>);
 <span class="hljs-selector-tag">get</span>(<span class="hljs-string">'./cat.js'</span>)
 <span class="hljs-selector-tag">get</span>(<span class="hljs-string">'./mouse.js'</span>)
 </code></pre>
-<p>Aaaand run it.</p>
-<pre><code>$ node node-get.js hello.js
+    <p>Aaaand run it.</p>
+    <pre><code>$ node node-get.js hello.js
 hello world!
 hello, I am a cat named Tom
 evalmachine.&lt;anonymous&gt;:1
@@ -158,14 +305,38 @@ const name = &#39;Jerry&#39;
 ^
 
 TypeError: Identifier &#39;name&#39; has already been declared.
-</code></pre><p>Variables defined in a Node.js(CommonJS) module are local to that module. Unless we export them using <code>exports</code> we can&#39;t access them outside the module. But code in <code>cat.js</code> and <code>mouse.js</code> apparently run in the same scope.</p>
-<p>Just because they live in two separate files does not make them run in two separate scopes. This problem can be traced to this line from <code>node-get.js</code>.</p>
-<pre><code class="lang-js">vm.runInThisContext(loadedJS)<span class="hljs-comment">;</span>
 </code></pre>
-<p>Every single module that will be loaded using our module system will go through this line. So every single module will be run in the context of <code>node-get.js</code>; And in the scope of the <code>get</code> function.</p>
-<p>The problem of scopes in JavaScript is well discussed over many years. Before ES6 functions are the only constructs in JavaScript that had a scope of their own. (ES6 introduced classes, <code>let</code> and <code>const</code>) So to give these modules their own scope I&#39;ll have to stick them inside one.</p>
-<p>I&#39;ll write a function called wrap which returns the code of a JavaScript function containing JavaScript code from the module.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
+    <p>
+      Variables defined in a Node.js(CommonJS) module are local to that module.
+      Unless we export them using <code>exports</code> we can&#39;t access them
+      outside the module. But code in <code>cat.js</code> and
+      <code>mouse.js</code> apparently run in the same scope.
+    </p>
+    <p>
+      Just because they live in two separate files does not make them run in two
+      separate scopes. This problem can be traced to this line from
+      <code>node-get.js</code>.
+    </p>
+    <pre><code class="lang-js">vm.runInThisContext(loadedJS)<span class="hljs-comment">;</span>
+</code></pre>
+    <p>
+      Every single module that will be loaded using our module system will go
+      through this line. So every single module will be run in the context of
+      <code>node-get.js</code>; And in the scope of the
+      <code>get</code> function.
+    </p>
+    <p>
+      The problem of scopes in JavaScript is well discussed over many years.
+      Before ES6 functions are the only constructs in JavaScript that had a
+      scope of their own. (ES6 introduced classes, <code>let</code> and
+      <code>const</code>) So to give these modules their own scope I&#39;ll have
+      to stick them inside one.
+    </p>
+    <p>
+      I&#39;ll write a function called wrap which returns the code of a
+      JavaScript function containing JavaScript code from the module.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
   <span class="hljs-string">`(() =&gt; {<span class="hljs-subst">${moduleJS}</span>})()`</span> <span class="hljs-comment">// wrapping moduleJS in a self calling arrow function</span>
 )
 
@@ -175,22 +346,39 @@ global.get = <span class="hljs-function"><span class="hljs-params">filename</spa
   vm.runInThisContext(wrappedJS);
 }
 </code></pre>
-<p>Now contents of the loaded module are put inside a function. This function calls itself.</p>
-<p>This fixes <code>node-get</code>&#39;s scope problem so I get the desired output.</p>
-<pre><code>$ node node-get.js hello.js
+    <p>
+      Now contents of the loaded module are put inside a function. This function
+      calls itself.
+    </p>
+    <p>
+      This fixes <code>node-get</code>&#39;s scope problem so I get the desired
+      output.
+    </p>
+    <pre><code>$ node node-get.js hello.js
 hello world!
 hello, I am a cat named Tom
 hello, I am a mouse named Jerry
-</code></pre><h3 id="-get-relative-paths"><code>get</code> relative paths</h3>
-<p>So now my module system is working pretty well. Currently, my Hello-Tom&amp;Jerry project&#39;s and <code>node-get</code>s files are all in the same directory. I&#39;ll tidy up things a bit by moving the example project&#39;s files into a directory aptly named &#39;example&#39;.</p>
-<pre><code>├── example
+</code></pre>
+    <h3 id="-get-relative-paths"><code>get</code> relative paths</h3>
+    <p>
+      So now my module system is working pretty well. Currently, my
+      Hello-Tom&amp;Jerry project&#39;s and <code>node-get</code>s files are all
+      in the same directory. I&#39;ll tidy up things a bit by moving the example
+      project&#39;s files into a directory aptly named &#39;example&#39;.
+    </p>
+    <pre><code>├── example
 │   ├── cat.js
 │   ├── mouse.js
 │   └── hello.js
 └── node-get.js
-</code></pre><p>I shouldn&#39;t need to change anything inside <code>hello.js</code> since I used relative paths to <code>get</code> other modules in it. And relative paths would be the same in this directory structure as well.</p>
-<p>Let&#39;s see how that works out.</p>
-<pre><code>$ node node-get.js example/hello.js
+</code></pre>
+    <p>
+      I shouldn&#39;t need to change anything inside <code>hello.js</code> since
+      I used relative paths to <code>get</code> other modules in it. And
+      relative paths would be the same in this directory structure as well.
+    </p>
+    <p>Let&#39;s see how that works out.</p>
+    <pre><code>$ node node-get.js example/hello.js
 
 hello world!
 fs.js:640
@@ -198,21 +386,64 @@ fs.js:640
                  ^
 
 Error: ENOENT: no such file or directory, open &#39;./cat.js&#39;
-</code></pre><p>I was used to <code>require</code> files with paths relative to the module I am calling <code>require</code> in, I thought <code>get</code> will work the same way. But turns out I need to do a bit of work to get it to work that way.</p>
-<p>Let&#39;s first understand why it did not work this way.</p>
-<p>The <code>fs</code> module is what we use to read the contents in loaded modules from <code>node-get.js</code></p>
-<p>fs module actually resolves relative paths relative to the current working directory of the process. Say I run <code>node-get</code> from <code>cwd/node-get</code>. So when <code>get(&#39;./cat.js&#39;)</code> is called inside <code>hello.js</code>(or anywhere else) where it looks for it is <code>cwd/cat.js</code>. It&#39;s not going to find a cat.js there because I just moved it into a directory named <code>example</code> so it&#39;s in <code>cwd/example/cat.js</code></p>
-<p>I&#39;d like <code>get</code> to resolve relative paths the same way <code>require</code> does. So I want the <code>get</code> global method in each of my modules to resolve relative modules relative to its own self. So <code>get</code> in each module should work in a way that is specific to that module. The best way I could achieve this is providing each module with its own specific instance of <code>get</code>.</p>
-<p>So first I&#39;ll change <code>wrappedFunction</code> to take a <code>get</code> parameter.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
+</code></pre>
+    <p>
+      I was used to <code>require</code> files with paths relative to the module
+      I am calling <code>require</code> in, I thought <code>get</code> will work
+      the same way. But turns out I need to do a bit of work to get it to work
+      that way.
+    </p>
+    <p>Let&#39;s first understand why it did not work this way.</p>
+    <p>
+      The <code>fs</code> module is what we use to read the contents in loaded
+      modules from <code>node-get.js</code>
+    </p>
+    <p>
+      fs module actually resolves relative paths relative to the current working
+      directory of the process. Say I run <code>node-get</code> from
+      <code>cwd/node-get</code>. So when <code>get(&#39;./cat.js&#39;)</code> is
+      called inside <code>hello.js</code>(or anywhere else) where it looks for
+      it is <code>cwd/cat.js</code>. It&#39;s not going to find a cat.js there
+      because I just moved it into a directory named <code>example</code> so
+      it&#39;s in <code>cwd/example/cat.js</code>
+    </p>
+    <p>
+      I&#39;d like <code>get</code> to resolve relative paths the same way
+      <code>require</code> does. So I want the <code>get</code> global method in
+      each of my modules to resolve relative modules relative to its own self.
+      So <code>get</code> in each module should work in a way that is specific
+      to that module. The best way I could achieve this is providing each module
+      with its own specific instance of <code>get</code>.
+    </p>
+    <p>
+      So first I&#39;ll change <code>wrappedFunction</code> to take a
+      <code>get</code> parameter.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
   <span class="hljs-string">`(get =&gt; {<span class="hljs-subst">${moduleJS}</span>})`</span>
 )
 </code></pre>
-<p>Note that the <code>wrappedFunction</code> is not self-calling anymore. (I have taken out the <code>()</code> at the end.) Instead, it&#39;s returned to the place where <code>runInThisContext</code> is called so it can be called from there.</p>
-<p>Now I&#39;ll change the <code>get</code> function.</p>
-<p>I have already decided that I need a specific <code>get</code> function for each new module. So instead of one single global <code>get</code> function, I will create a <code>get</code> factory function named <code>createGet</code> so I can create any number of <code>get</code>s from it. Each created <code>get</code> is different from another because each <code>get</code> function has a <code>caller</code> specific to that particular <code>get</code>.</p>
-<p>Here is the <code>createGet</code> function with each line following a comment describing it.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> createGet = <span class="hljs-function"><span class="hljs-params">caller</span> =&gt;</span> {
+    <p>
+      Note that the <code>wrappedFunction</code> is not self-calling anymore. (I
+      have taken out the <code>()</code> at the end.) Instead, it&#39;s returned
+      to the place where <code>runInThisContext</code> is called so it can be
+      called from there.
+    </p>
+    <p>Now I&#39;ll change the <code>get</code> function.</p>
+    <p>
+      I have already decided that I need a specific <code>get</code> function
+      for each new module. So instead of one single global
+      <code>get</code> function, I will create a <code>get</code> factory
+      function named <code>createGet</code> so I can create any number of
+      <code>get</code>s from it. Each created <code>get</code> is different from
+      another because each <code>get</code> function has a
+      <code>caller</code> specific to that particular <code>get</code>.
+    </p>
+    <p>
+      Here is the <code>createGet</code> function with each line following a
+      comment describing it.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> createGet = <span class="hljs-function"><span class="hljs-params">caller</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">filename</span> =&gt;</span> {
     <span class="hljs-comment">// Get the directory the caller is in</span>
     <span class="hljs-keyword">const</span> callersDirectory = path.dirname(caller);
@@ -237,9 +468,13 @@ Error: ENOENT: no such file or directory, open &#39;./cat.js&#39;
   }
 }
 </code></pre>
-<p>When a <code>get</code> is passed a relative file path, it is resolved relative to the <code>get</code> function&#39;s <code>caller</code>s location.</p>
-<p>Here&#39;s the latest <code>node-get.js</code>.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
+    <p>
+      When a <code>get</code> is passed a relative file path, it is resolved
+      relative to the <code>get</code> function&#39;s <code>caller</code>s
+      location.
+    </p>
+    <p>Here&#39;s the latest <code>node-get.js</code>.</p>
+    <pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
 cconst vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
@@ -267,29 +502,50 @@ cconst vm = <span class="hljs-built_in">require</span>(<span class="hljs-string"
 <span class="hljs-keyword">const</span> rootGet = createGet(rootCaller);
 rootGet(process.argv[<span class="hljs-number">2</span>])
 </code></pre>
-<p>Now relative paths work the way we are familiar with and I get the expected output.</p>
-<pre><code>$ node node-get.js example/hello.js
+    <p>
+      Now relative paths work the way we are familiar with and I get the
+      expected output.
+    </p>
+    <pre><code>$ node node-get.js example/hello.js
 hello world!
 hello, I am a cat named Tom
 hello, I am a mouse named Jerry
-</code></pre><h3 id="-give-"><code>give</code></h3>
-<p>Currently when <code>get</code> is used to load another JavaScript file the contents of that file is executed. But with Node.js modules we can return the results of this execution to the caller to be used later. (Using <code>exports</code>)</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+</code></pre>
+    <h3 id="-give-"><code>give</code></h3>
+    <p>
+      Currently when <code>get</code> is used to load another JavaScript file
+      the contents of that file is executed. But with Node.js modules we can
+      return the results of this execution to the caller to be used later.
+      (Using <code>exports</code>)
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 fs.readFileSync(<span class="hljs-string">'somefile'</span>) <span class="hljs-comment">// Like this.</span>
 </code></pre>
-<p>Now I&#39;ll implement the same functionality in <code>node-get</code>.</p>
-<p>I&#39;ll provide each module with a <code>give</code> function to complement the <code>get</code> it already has. <code>give</code> can be used in the following way.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// capitalize.js</span>
+    <p>
+      Now I&#39;ll implement the same functionality in <code>node-get</code>.
+    </p>
+    <p>
+      I&#39;ll provide each module with a <code>give</code> function to
+      complement the <code>get</code> it already has. <code>give</code> can be
+      used in the following way.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// capitalize.js</span>
 <span class="hljs-keyword">const</span> capitalize = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-comment">/*function logic*/</span> }
 give(capitalize)
 </code></pre>
-<p>First, I&#39;ll change the wrapperFunction to accept another parameter, <code>give</code>.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
+    <p>
+      First, I&#39;ll change the wrapperFunction to accept another parameter,
+      <code>give</code>.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> wrap = <span class="hljs-function"><span class="hljs-params">moduleJS</span> =&gt;</span> (
   <span class="hljs-string">`((get, give) =&gt; {<span class="hljs-subst">${moduleJS}</span>})`</span>
 )
 </code></pre>
-<p>I&#39;ll implement <code>give</code> in the <code>createGet</code> function itself.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> createGet = <span class="hljs-function"><span class="hljs-params">caller</span> =&gt;</span> {
+    <p>
+      I&#39;ll implement <code>give</code> in the
+      <code>createGet</code> function itself.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-keyword">const</span> createGet = <span class="hljs-function"><span class="hljs-params">caller</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">filename</span> =&gt;</span> {
     <span class="hljs-keyword">const</span> callersDirectory = path.dirname(caller);
     <span class="hljs-keyword">const</span> filepath = path.resolve(callersDirectory, filename); <span class="hljs-comment">// Paths resolved relative to caller's directory</span>
@@ -308,27 +564,36 @@ give(capitalize)
   }
 }
 </code></pre>
-<p>It&#39;s very simple to implement give. It takes the <code>value</code> passed to it and assigns it to <code>givenValue</code> which is returned from the outer <code>get</code> function. This would mean that only the last <code>give</code> call from a module will take effect.</p>
-<p>This completes my new module system and I feel quite clever!</p>
-<p>Here are the files from my example project updated to demonstrate the latest features of <code>node-get</code>.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// utils/capitalize.js</span>
+    <p>
+      It&#39;s very simple to implement give. It takes the
+      <code>value</code> passed to it and assigns it to
+      <code>givenValue</code> which is returned from the outer
+      <code>get</code> function. This would mean that only the last
+      <code>give</code> call from a module will take effect.
+    </p>
+    <p>This completes my new module system and I feel quite clever!</p>
+    <p>
+      Here are the files from my example project updated to demonstrate the
+      latest features of <code>node-get</code>.
+    </p>
+    <pre><code class="lang-js"><span class="hljs-comment">// utils/capitalize.js</span>
 <span class="hljs-comment">// Lifted from stackoverflow: http://stackoverflow.com/a/7592235/1150725</span>
 <span class="hljs-keyword">const</span> capitalize = <span class="hljs-function"><span class="hljs-params">text</span> =&gt;</span> {
     <span class="hljs-keyword">return</span> text.replace(<span class="hljs-regexp">/(?:^|\s)\S/g</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>) </span>{ <span class="hljs-keyword">return</span> a.toUpperCase(); });
 }
 give(capitalize)
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// cat.js</span>
 <span class="hljs-keyword">const</span> capitalize = <span class="hljs-keyword">get</span>(<span class="hljs-string">'./utils/capitalize.js'</span>)
 <span class="hljs-keyword">const</span> name = <span class="hljs-string">'Tom'</span>
 give(capitalize(<span class="hljs-string">`hello, I am a cat named <span class="hljs-subst">${name}</span>`</span>));
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// mouse.js</span>
 <span class="hljs-keyword">const</span> capitalize = <span class="hljs-keyword">get</span>(<span class="hljs-string">'./utils/capitalize.js'</span>)
 <span class="hljs-keyword">const</span> name = <span class="hljs-string">'Jerry'</span>
 give(capitalize(<span class="hljs-string">`hello, I am a mouse named <span class="hljs-subst">${name}</span>`</span>));
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
+    <pre><code class="lang-js"><span class="hljs-comment">// hello.js</span>
 console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'hello world!'</span>);
 
 <span class="hljs-keyword">const</span> catText = <span class="hljs-built_in">get</span>(<span class="hljs-string">'./cat.js'</span>);
@@ -337,8 +602,8 @@ console.<span class="hljs-built_in">log</span>(catText);
 <span class="hljs-keyword">const</span> mouseText = <span class="hljs-built_in">get</span>(<span class="hljs-string">'./mouse.js'</span>);
 console.<span class="hljs-built_in">log</span>(mouseText);
 </code></pre>
-<p>Here is the completed <code>node-get.js</code>.</p>
-<pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
+    <p>Here is the completed <code>node-get.js</code>.</p>
+    <pre><code class="lang-js"><span class="hljs-comment">// node-get.js</span>
 <span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
@@ -371,36 +636,92 @@ console.<span class="hljs-built_in">log</span>(mouseText);
 <span class="hljs-keyword">const</span> rootGet = createGet(rootParent);
 rootGet(process.argv[<span class="hljs-number">2</span>])
 </code></pre>
-<p>I&#39;ll run <code>node-get</code> one last time.</p>
-<pre><code>$ node node-get.js example/hello.js
+    <p>I&#39;ll run <code>node-get</code> one last time.</p>
+    <pre><code>$ node node-get.js example/hello.js
 hello world!
 Hello, I Am A Cat Named Tom
 Hello, I Am A Mouse Named Jerry
-</code></pre><h3 id="comparison-with-node-js-module-system">Comparison with Node.js module system</h3>
-<p>Node.js module system works very similar to the module system I just built.</p>
-<ul>
-<li><p>Node.js module system reads a new module using <code>fs.readFileSync</code> and executes its JavaScript using <code>vm.runInThisContext</code> just the way <code>node-get</code> does.</p>
-</li>
-<li><p>It also wraps JavaScript files inside a <a href="https://nodejs.org/api/modules.html#modules_the_module_wrapper">wrapperFunction</a> to give them a local scope. In fact, this wrapper can be looked at using the <code>module</code> module. Let me show.</p>
-</li>
-</ul>
-<pre><code>$ node
+</code></pre>
+    <h3 id="comparison-with-node-js-module-system">
+      Comparison with Node.js module system
+    </h3>
+    <p>
+      Node.js module system works very similar to the module system I just
+      built.
+    </p>
+    <ul>
+      <li>
+        <p>
+          Node.js module system reads a new module using
+          <code>fs.readFileSync</code> and executes its JavaScript using
+          <code>vm.runInThisContext</code> just the way
+          <code>node-get</code> does.
+        </p>
+      </li>
+      <li>
+        <p>
+          It also wraps JavaScript files inside a
+          <a
+            href="https://nodejs.org/api/modules.html#modules_the_module_wrapper"
+            >wrapperFunction</a
+          >
+          to give them a local scope. In fact, this wrapper can be looked at
+          using the <code>module</code> module. Let me show.
+        </p>
+      </li>
+    </ul>
+    <pre><code>$ node
 &gt; const m = require(&#39;module&#39;)
 &gt; m.wrap(&quot;somejs&quot;)
 &#39;(function (exports, require, module, __filename, __dirname) { somejs\n});&#39;
-</code></pre><p>See that its signature is quite similar to <code>node-get</code>&#39;s wrapper function&#39;s.</p>
-<ul>
-<li>It also has a <code>require</code> function specific to each module and uses this fact to resolve relative paths relative to the module&#39;s location</li>
-</ul>
-<p>These similarities are there because <code>node-get</code> is built using the understanding I got of Node.js module system by going through its source.</p>
-<p>And of course, Node.js module system has many additional features as well.</p>
-<ul>
-<li>When a module is <code>require</code>d, it is cached. So later <code>require</code>s to the same module will be faster. This also means that they act as singletons. (A module is executed only once)</li>
-<li>It has <code>node_modules</code>. When <code>require</code> is called with an absolute path it looks in several locations including a <code>node_modules</code> directory in the root of the project.</li>
-<li>You can <code>require</code> JSON files with it.</li>
-</ul>
-<p>These features are not that complex. I bet you could think of ways to implement them into <code>node-get</code> if needed.</p>
-<p>This excercise helped me to get some subtle understanding of Node.js. I hope you enjoyed reading about it.</p>
-<p>Despite what is commonly said, I really think that JavaScript is alright. I love Node.js for allowing me to do a great many things with it.</p>
-<p>I plan to hack deeper into Node.js, and write about my experiments with it. Stay tuned!</p>
-</body>
+</code></pre>
+    <p>
+      See that its signature is quite similar to <code>node-get</code>&#39;s
+      wrapper function&#39;s.
+    </p>
+    <ul>
+      <li>
+        It also has a <code>require</code> function specific to each module and
+        uses this fact to resolve relative paths relative to the module&#39;s
+        location
+      </li>
+    </ul>
+    <p>
+      These similarities are there because <code>node-get</code> is built using
+      the understanding I got of Node.js module system by going through its
+      source.
+    </p>
+    <p>
+      And of course, Node.js module system has many additional features as well.
+    </p>
+    <ul>
+      <li>
+        When a module is <code>require</code>d, it is cached. So later
+        <code>require</code>s to the same module will be faster. This also means
+        that they act as singletons. (A module is executed only once)
+      </li>
+      <li>
+        It has <code>node_modules</code>. When <code>require</code> is called
+        with an absolute path it looks in several locations including a
+        <code>node_modules</code> directory in the root of the project.
+      </li>
+      <li>You can <code>require</code> JSON files with it.</li>
+    </ul>
+    <p>
+      These features are not that complex. I bet you could think of ways to
+      implement them into <code>node-get</code> if needed.
+    </p>
+    <p>
+      This excercise helped me to get some subtle understanding of Node.js. I
+      hope you enjoyed reading about it.
+    </p>
+    <p>
+      Despite what is commonly said, I really think that JavaScript is alright.
+      I love Node.js for allowing me to do a great many things with it.
+    </p>
+    <p>
+      I plan to hack deeper into Node.js, and write about my experiments with
+      it. Stay tuned!
+    </p>
+  </body>
+</html>

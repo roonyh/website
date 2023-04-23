@@ -1,51 +1,207 @@
-<div dir="ltr" style="text-align: left;" trbidi="on">
-<div dir="ltr" style="text-align: left;" trbidi="on">
-Sinhala language is spoken only by the Sinhalese people in the small island of Sri Lanka who are about 60% of the total population of a 20 million. So its one of the least spoken languages in the world which makes seeing Sinhala characters on the web is a delightful experience for a Sinhalese. At least it used to be. Nowadays with the breakethrough of unicode its become so commonplace, theres nothing so special about it. There are many sinhala websites, half of posts on my facebook wall are in Sinhala and though its still somewhat dodgy, Google translate includes Sinhala.<br />
-<br />
-Before unicode ASCII was popular. It still is here but unicode is the norm. There are 256 ASCII characters and 128 of them were used for letters of the English language. As a standard ascii code 065 is used for capital A in English fonts. In fonts that have glyphs for languages other than English its for some standard letter of that language's alphabet. And in Wijesekara layout for Sinhala fonts it stands for "Hal kireema"&nbsp;<span style="background-color: #f9f9f9; font-family: sans-serif; font-size: 22.3125px; line-height: 35.7000007629395px;">්</span>. The problem with this standard is that same sequence of ascii codes could display different glyphs depending on the font used. Some text written in&nbsp;Sinhala&nbsp;language using a Sinhala ascii&nbsp;font, if viewed using a different font, could display nothing but gibberish. Or worse, if two languages contain similar letters, it could give out a meaningful yet different meaning. So its obvious that ascii texts are very difficult to be used universally. Hence unicode.<br />
-<br />
-There were 65000 unicode characters in the beginning and now there are 17 times more which allows every letter in every language in the world to have its own unicode code. There's still an excess of codes which are taken up by glyphs like ♥, ♫, ☯, &nbsp;☺. With unicode, the font used should not matter in deciding which letter of which language is displayed. Only in the visual properties of glyphs it should matter. Font makers are guided on which unicode code should display which characters. 128 characters from code&nbsp;<span style="background-color: #f9f9f9; font-family: sans-serif; font-size: 13.0900001525879px; line-height: 19.6350002288818px;">U+0D80</span>&nbsp;through&nbsp;<span style="background-color: #f9f9f9; font-family: sans-serif; font-size: 13.0900001525879px; line-height: 19.6350002288818px;">U+0DFF</span>&nbsp;are reserved for <a href="https://en.wikipedia.org/wiki/Sinhala_(Unicode_block)" target="_blank">Sinhala characters</a>.<br />
-<br />
-Obviously a font cannot contain glyphs for every unicode code. If a selected font does not contain glyphs for a certain unicode characters those characters would be displayed in a font that does. Applications including web browsers would select the fallback font depending on the way the system is configured. In my ubuntu 14.04 machine Sinhala characters are displayed by the font LKLUG. It can be changed by changing configuration of <a href="http://www.freedesktop.org/wiki/Software/fontconfig/" target="_blank">fontconfig</a>.<br />
-<br />
-Now to displaying characters on the web. Earlier, content of web sites are displayed entirely in fonts that are installed in viewers system. Websites could optionally specify a certain family or a font or a chain of fonts for fallbacks. Though a webpage could end up being displayed entirely different from the way the developer expected because of lack of a certain installed font. Though this is the case with many websites even now, there is the introduction of webfonts which could change all that.<br />
-<br />
-Developers can specify a font to use and the place to get that font, using @font-face notation so the clients (web browsers) would do everything they can to display text using that font. Usually they only fallback if they could not download the webfont from the specified location.<br />
-<br />
-Early Sinhala websites would include ASCII text. And as none of the sinhala fonts they could use could be considered web safe, they asked users to download and install whatever font they are using. Notices appeared that says "Do you see sinhala characters? If not download and install this font" while gibberish apeard in whatever the english ascii font the web browser decided to fallback. Only once the font is installed the text would look meaningful.<br />
-<br />
-When unicode came through many sinhala websites changed from ASCII to Unicode. The upside is most systems included a unicode font that covers the sinhala unicode characters. This got rid of the step of downloading and installing fonts. Unfortunately this is also the downside. Most systems... Some systems does not include a Sinhala unicode font. For example Android devices with versions KitKat and prior. And without rooting its very difficult to install a new font there. LollyPop standard font includes glyphs for Sinhala characters. But some manufacturers like Sony removed them for reasons known only to them. Maybe they thought extra few KiloBytes is not worth an entire nation reading and writing from their native toung. Sinhala websites like bbc.lk, <a href="http://lankadeepa.lk/">lankadeepa.lk</a> contains unicode text. So they are readable from most pcs but not from most Android hand helds.<br />
-<br />
-Then webfonts came up. Which allows developers to include a Sinhala unicode font with the rest of the content from the website. So its readable from most browsers including ones in Android devices. <a href="http://gossip.hirufm.lk/">gossip.hirufm.lk</a> does this. Many other Sinhala websites do not seem to do it.<br />
-<br />
-<a href="http://www.gossiplankanews.com/">gossiplankanews.lk</a>, another gossip site!, use webfonts but they are sticking to ASCII. If text from their site is copied and pasted somewhere you can see the gibberish they truely are. But at least since they use webfonts content should be readable from systems without Sinhala Unicode fonts, so Android devices.<br />
-<br />
-If the developers of Sinhala websites use webfonts with unicode content they can increase their audience. <a href="http://www.fontsquirrel.com/" target="_blank">fontsquirrel </a>is a good place, among others, to generate a webfonts kit. The hodipotha font from icta.lk is released under creative commons license, so it can be used to generate the webfonts kit.<br />
-<br />
-In fontsquirrel it is important to chose the expert option and pick no subsetting. Unless it will generate webfonts with characters only in the range of western charaters omitting Sinhala characters.<br />
-<br /></div>
-<style>
-@font-face {
-    font-family: 'hodipotharegular';
-    src: url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.eot');
-    src: url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.eot?#iefix') format('embedded-opentype'),
-         url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.woff2') format('woff2'),
-         url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.woff') format('woff'),
-         url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.ttf') format('truetype'),
-         url('https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.svg#hodipotharegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-</style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aruna Herath</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-Following text is using webfonts (hodipotha) and hence should be visible in many browsers including ones in Android mobiles in (not very beautiful) glyphs of the hodipotha font.<br />
-<h1 style="font-family: hodipotharegular;">
-සිංහල යුනිකෝඩ් (unicode) වෙබ් ෆොන්ට්ස් හරහා
-</h1>
-Following is not. And hence would show up in whatever the font your system decides.(is configured)<br />
-<h1>
-සිංහල යුනිකෝඩ් (unicode)
-</h1>
-<div>
-<br /></div>
-</div>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+  </head>
+  <body>
+    <style>
+      html {
+        max-width: 70ch;
+        /* larger spacing on larger screens, very small spacing on tiny screens */
+        padding: calc(1vmin + 0.5rem);
+        /* shorthand for margin-left/margin-right */
+        margin-inline: auto;
+        /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+        font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+        /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+        font-family: system-ui;
+      }
+
+      /* increase line-height for everything except headings */
+      body :not(:is(h1, h2, h3, h4, h5, h6)) {
+        line-height: 1.75;
+      }
+    </style>
+    <div dir="ltr" style="text-align: left" trbidi="on">
+      <h1>Displaying Sinhala Characters on the Web</h1>
+      <div dir="ltr" style="text-align: left" trbidi="on">
+        Sinhala language is spoken only by the Sinhalese people in the small
+        island of Sri Lanka who are about 60% of the total population of a 20
+        million. So its one of the least spoken languages in the world which
+        makes seeing Sinhala characters on the web is a delightful experience
+        for a Sinhalese. At least it used to be. Nowadays with the breakethrough
+        of unicode its become so commonplace, theres nothing so special about
+        it. There are many sinhala websites, half of posts on my facebook wall
+        are in Sinhala and though its still somewhat dodgy, Google translate
+        includes Sinhala.<br />
+        <br />
+        Before unicode ASCII was popular. It still is here but unicode is the
+        norm. There are 256 ASCII characters and 128 of them were used for
+        letters of the English language. As a standard ascii code 065 is used
+        for capital A in English fonts. In fonts that have glyphs for languages
+        other than English its for some standard letter of that language's
+        alphabet. And in Wijesekara layout for Sinhala fonts it stands for "Hal
+        kireema"&nbsp;<span
+          style="
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+            font-size: 22.3125px;
+            line-height: 35.7000007629395px;
+          "
+          >්</span
+        >. The problem with this standard is that same sequence of ascii codes
+        could display different glyphs depending on the font used. Some text
+        written in&nbsp;Sinhala&nbsp;language using a Sinhala ascii&nbsp;font,
+        if viewed using a different font, could display nothing but gibberish.
+        Or worse, if two languages contain similar letters, it could give out a
+        meaningful yet different meaning. So its obvious that ascii texts are
+        very difficult to be used universally. Hence unicode.<br />
+        <br />
+        There were 65000 unicode characters in the beginning and now there are
+        17 times more which allows every letter in every language in the world
+        to have its own unicode code. There's still an excess of codes which are
+        taken up by glyphs like ♥, ♫, ☯, &nbsp;☺. With unicode, the font used
+        should not matter in deciding which letter of which language is
+        displayed. Only in the visual properties of glyphs it should matter.
+        Font makers are guided on which unicode code should display which
+        characters. 128 characters from code&nbsp;<span
+          style="
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+            font-size: 13.0900001525879px;
+            line-height: 19.6350002288818px;
+          "
+          >U+0D80</span
+        >&nbsp;through&nbsp;<span
+          style="
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+            font-size: 13.0900001525879px;
+            line-height: 19.6350002288818px;
+          "
+          >U+0DFF</span
+        >&nbsp;are reserved for
+        <a
+          href="https://en.wikipedia.org/wiki/Sinhala_(Unicode_block)"
+          target="_blank"
+          >Sinhala characters</a
+        >.<br />
+        <br />
+        Obviously a font cannot contain glyphs for every unicode code. If a
+        selected font does not contain glyphs for a certain unicode characters
+        those characters would be displayed in a font that does. Applications
+        including web browsers would select the fallback font depending on the
+        way the system is configured. In my ubuntu 14.04 machine Sinhala
+        characters are displayed by the font LKLUG. It can be changed by
+        changing configuration of
+        <a
+          href="http://www.freedesktop.org/wiki/Software/fontconfig/"
+          target="_blank"
+          >fontconfig</a
+        >.<br />
+        <br />
+        Now to displaying characters on the web. Earlier, content of web sites
+        are displayed entirely in fonts that are installed in viewers system.
+        Websites could optionally specify a certain family or a font or a chain
+        of fonts for fallbacks. Though a webpage could end up being displayed
+        entirely different from the way the developer expected because of lack
+        of a certain installed font. Though this is the case with many websites
+        even now, there is the introduction of webfonts which could change all
+        that.<br />
+        <br />
+        Developers can specify a font to use and the place to get that font,
+        using @font-face notation so the clients (web browsers) would do
+        everything they can to display text using that font. Usually they only
+        fallback if they could not download the webfont from the specified
+        location.<br />
+        <br />
+        Early Sinhala websites would include ASCII text. And as none of the
+        sinhala fonts they could use could be considered web safe, they asked
+        users to download and install whatever font they are using. Notices
+        appeared that says "Do you see sinhala characters? If not download and
+        install this font" while gibberish apeard in whatever the english ascii
+        font the web browser decided to fallback. Only once the font is
+        installed the text would look meaningful.<br />
+        <br />
+        When unicode came through many sinhala websites changed from ASCII to
+        Unicode. The upside is most systems included a unicode font that covers
+        the sinhala unicode characters. This got rid of the step of downloading
+        and installing fonts. Unfortunately this is also the downside. Most
+        systems... Some systems does not include a Sinhala unicode font. For
+        example Android devices with versions KitKat and prior. And without
+        rooting its very difficult to install a new font there. LollyPop
+        standard font includes glyphs for Sinhala characters. But some
+        manufacturers like Sony removed them for reasons known only to them.
+        Maybe they thought extra few KiloBytes is not worth an entire nation
+        reading and writing from their native toung. Sinhala websites like
+        bbc.lk,
+        <a href="http://lankadeepa.lk/">lankadeepa.lk</a> contains unicode text.
+        So they are readable from most pcs but not from most Android hand
+        helds.<br />
+        <br />
+        Then webfonts came up. Which allows developers to include a Sinhala
+        unicode font with the rest of the content from the website. So its
+        readable from most browsers including ones in Android devices.
+        <a href="http://gossip.hirufm.lk/">gossip.hirufm.lk</a> does this. Many
+        other Sinhala websites do not seem to do it.<br />
+        <br />
+        <a href="http://www.gossiplankanews.com/">gossiplankanews.lk</a>,
+        another gossip site!, use webfonts but they are sticking to ASCII. If
+        text from their site is copied and pasted somewhere you can see the
+        gibberish they truely are. But at least since they use webfonts content
+        should be readable from systems without Sinhala Unicode fonts, so
+        Android devices.<br />
+        <br />
+        If the developers of Sinhala websites use webfonts with unicode content
+        they can increase their audience.
+        <a href="http://www.fontsquirrel.com/" target="_blank">fontsquirrel </a
+        >is a good place, among others, to generate a webfonts kit. The
+        hodipotha font from icta.lk is released under creative commons license,
+        so it can be used to generate the webfonts kit.<br />
+        <br />
+        In fontsquirrel it is important to chose the expert option and pick no
+        subsetting. Unless it will generate webfonts with characters only in the
+        range of western charaters omitting Sinhala characters.<br />
+        <br />
+      </div>
+      <style>
+        @font-face {
+          font-family: "hodipotharegular";
+          src: url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.eot");
+          src: url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.eot?#iefix")
+              format("embedded-opentype"),
+            url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.woff2")
+              format("woff2"),
+            url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.woff")
+              format("woff"),
+            url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.ttf")
+              format("truetype"),
+            url("https://dl.dropboxusercontent.com/u/43010405/hodipotha-9-webfont.svg#hodipotharegular")
+              format("svg");
+          font-weight: normal;
+          font-style: normal;
+        }
+      </style>
+
+      Following text is using webfonts (hodipotha) and hence should be visible
+      in many browsers including ones in Android mobiles in (not very beautiful)
+      glyphs of the hodipotha font.<br />
+      <h1 style="font-family: hodipotharegular">
+        සිංහල යුනිකෝඩ් (unicode) වෙබ් ෆොන්ට්ස් හරහා
+      </h1>
+      Following is not. And hence would show up in whatever the font your system
+      decides.(is configured)<br />
+      <h1>සිංහල යුනිකෝඩ් (unicode)</h1>
+      <div>
+        <br />
+      </div>
+    </div>
+  </body>
+</html>
